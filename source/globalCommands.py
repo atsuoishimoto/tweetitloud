@@ -42,16 +42,16 @@ class GlobalCommands(ScriptableObject):
 		ui.message(_("input help %s")%state)
 	script_toggleInputHelp.__doc__=_("Turns input help on or off. When on, any input such as pressing a key on the keyboard will tell you what script is associated with that input, if any.")
 
-	def script_toggleCurrentAppSelfVoicing(self,keyPress):
+	def script_toggleCurrentAppSleepMode(self,gesture):
 		curApp=api.getFocusObject().appModule
-		if curApp.selfVoicing:
-			curApp.selfVoicing=False
-			ui.message(_("self voicing off"))
+		if curApp.sleepMode:
+			curApp.sleepMode=False
+			ui.message(_("Sleep mode off"))
 		else:
-			curApp.selfVoicing=True
-			ui.message(_("self voicing on"))
-	script_toggleCurrentAppSelfVoicing.__doc__=_("Toggles the self-voicing mode of the active application.")
-	script_toggleCurrentAppSelfVoicing.allowInSelfVoicing=True
+			curApp.sleepMode=True
+			ui.message(_("Sleep mode on"))
+	script_toggleCurrentAppSleepMode.__doc__=_("Toggles  sleep mode on and off for  the active application.")
+	script_toggleCurrentAppSleepMode.allowInSleepMode=True
 
 	def script_reportCurrentLine(self,gesture):
 		obj=api.getFocusObject()
@@ -202,7 +202,7 @@ class GlobalCommands(ScriptableObject):
 		obj=api.getNavigatorObject() 
 		try:
 			p=api.getReviewPosition().pointAtStart
-		except NotImplementedError:
+		except (NotImplementedError, LookupError):
 			p=None
 		if p:
 			x=p.x
@@ -909,13 +909,45 @@ class GlobalCommands(ScriptableObject):
 		self._copyStartMarker = None
 	script_review_copy.__doc__ = _("Retrieves the text from the previously set start marker up to and including the current position of the review cursor and copies it to the clipboard")
 
+	def script_braille_scrollBack(self, gesture):
+		braille.handler.scrollBack()
+	script_braille_scrollBack.__doc__ = _("Scrolls the braille display back")
+	script_braille_scrollBack.bypassInputHelp = True
+
+	def script_braille_scrollForward(self, gesture):
+		braille.handler.scrollForward()
+	script_braille_scrollForward.__doc__ = _("Scrolls the braille display forward")
+	script_braille_scrollForward.bypassInputHelp = True
+
+	def script_braille_routeTo(self, gesture):
+		braille.handler.routeTo(gesture.routingIndex)
+	script_braille_routeTo.__doc__ = _("Routes the cursor to or activates the object under this braille cell")
+
+	def script_braille_previousLine(self, gesture):
+		if braille.handler.buffer.regions: 
+			braille.handler.buffer.regions[-1].previousLine(start=True)
+	script_braille_previousLine.__doc__ = _("Moves the braille display to the previous line")
+
+	def script_braille_nextLine(self, gesture):
+		if braille.handler.buffer.regions: 
+			braille.handler.buffer.regions[-1].nextLine()
+	script_braille_nextLine.__doc__ = _("Moves the braille display to the next line")
+
+	def script_reloadPlugins(self, gesture):
+		import globalPluginHandler
+		appModuleHandler.reloadAppModules()
+		globalPluginHandler.reloadGlobalPlugins()
+		NVDAObject.clearDynamicClassCache()
+		ui.message(_("Plugins reloaded"))
+	script_reloadPlugins.__doc__=_("Reloads app modules and global plugins without restarting NVDA, which can be Useful for developers")
+
 	__gestures = {
 		# Basic
 		"kb:NVDA+n": "showGui",
 		"kb:NVDA+1": "toggleInputHelp",
 		"kb:NVDA+q": "quit",
 		"kb:NVDA+f2": "passNextKeyThrough",
-		"kb:NVDA+shift+s":"toggleCurrentAppSelfVoicing",
+		"kb:NVDA+shift+s":"toggleCurrentAppSleepMode",
 
 		# System status
 		"kb:NVDA+f12": "dateTime",
@@ -1052,6 +1084,7 @@ class GlobalCommands(ScriptableObject):
 		"kb:NVDA+f1": "navigatorObject_devInfo",
 		"kb:NVDA+control+f1": "reportAppModuleInfo",
 		"kb:NVDA+control+z": "activatePythonConsole",
+		"kb:NVDA+control+f3": "reloadPlugins",
 		"kb(desktop):NVDA+control+f2": "test_navigatorDisplayModelText",
 	}
 

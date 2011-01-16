@@ -108,12 +108,11 @@ Before overriding the last object, this function calls event_loseFocus on the ob
 	del ancestors[-1]
 	newAppModuleSet=set(o.appModule for o in ancestors+[obj] if o and o.appModule)
 	for removedMod in oldAppModuleSet-newAppModuleSet:
-		if not removedMod.selfVoicing and hasattr(removedMod,'event_appLoseFocus'):
-			removedMod.event_appLoseFocus()
+		if not removedMod.sleepMode and hasattr(removedMod,'event_appModule_loseFocus'):
+			removedMod.event_appModule_loseFocus()
   	for addedMod in newAppModuleSet-oldAppModuleSet:
-		if addedMod.selfVoicing: ui.message(_("self voicing application"))
-		if not addedMod.selfVoicing and hasattr(addedMod,'event_appGainFocus'):
-			addedMod.event_appGainFocus()
+		if not addedMod.sleepMode and hasattr(addedMod,'event_appModule_gainFocus'):
+			addedMod.event_appModule_gainFocus()
 	treeInterceptorHandler.cleanup()
 	treeInterceptorObject=None
 	o=None

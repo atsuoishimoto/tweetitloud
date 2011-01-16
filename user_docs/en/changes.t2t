@@ -14,7 +14,10 @@
 - A small beep is now heard when typing characters with the shift key while capslock is on. This can be turned off by unchecking the related new option in the Keyboard settings dialog. (#663)
 - hard page breaks are now announced when moving by line in Microsoft Word. (#758)
 - Bullets and numbering are now spoken in Microsoft Word when moving by line. (#208)  
-- A command to toggle self voicing mode for the current application (NVDA+shift+s) is now available. Self voicing mode disables all screen reading functionality in NVDA for a particular application. Very useful for applications that provide their own speech and or screen reading features. Press this command again to disable self voicing mode.
+- A command to toggle Sleep mode for the current application (NVDA+shift+s) is now available. Sleep mode (previously known as self voicing mode) disables all screen reading functionality in NVDA for a particular application. Very useful for applications that provide their own speech and or screen reading features. Press this command again to disable Sleep mode.
+- Some additional braille display key bindings have been added. See the Supported Braille Displays section of the User Guide for details. (#209)
+- For the convenience of third party developers, app modules as well as global plugins can now be reloaded without restarting NVDA. Use tools -> Reload plugins in the NVDA menu or NVDA+control+f3. (#544)
+- NVDA now remembers the position you were at when returning to a previously visited web page. This applies until either the browser or NVDA is exited. (#132)
 
  
 == Changes ==
@@ -43,15 +46,17 @@
 - Announce the correct label for errors in the Microsoft Word Spell Check dialog (e.g. Not in dictionary, Grammar error, punctuation). Previously  they were all announced as grammar error. (#883)
 - Typing in Microsoft Word while using a braille display should no longer cause garbled text to be typed, and a rare freeze when pressing a braille routing key in Word documents has been fixed. (#1212) However a limitation is that Arabic text can no longer be read in Word 2003 and below, while using a braille display. (#627)
 - When pressing the delete key in an edit field, the text/cursor on a braille display should now always be updated appropriately to reflect the change. (#947)
- - Changes on dynamic pages in Gecko2 documents (E.g. Firefox 4) while multiple tabs are open is now properly reflected by NVDA. Previously only changes in the first tab were reflected. (Mozilla bug 610985)
- - NVDA can now properly announce the suggestions for grammar and punctuation errors in Microsoft Word spell check dialog. (#704)
+- Changes on dynamic pages in Gecko2 documents (E.g. Firefox 4) while multiple tabs are open is now properly reflected by NVDA. Previously only changes in the first tab were reflected. (Mozilla bug 610985)
+- NVDA can now properly announce the suggestions for grammar and punctuation errors in Microsoft Word spell check dialog. (#704)
  
  
 == Changes for Developers ==
 - SCons is now used to prepare the source tree and create binary builds, portable archives, installers, etc. See readme.txt at the root of the source distribution for details.
 - The key names used by NVDA (including key maps) have been made more friendly/logical; e.g. upArrow instead of extendedUp and numpadPageUp instead of prior. See the vkCodes module for a list.
--All input from the user is now represented by an inputCore.InputGesture instance. (#601)
- - Each source of input subclasses the base InputGesture class. For example, key presses are encompassed by the keyboardHandler.KeyboardInputGesture class.
+- All input from the user is now represented by an inputCore.InputGesture instance. (#601)
+ - Each source of input subclasses the base InputGesture class.
+ - Key presses on the system keyboard are encompassed by the keyboardHandler.KeyboardInputGesture class.
+ - Presses of buttons, wheels and other controls on a braille display are encompassed by subclasses of the braille.BrailleDisplayGesture class. These subclasses are provided by each braille display driver.
 - Input gestures are bound to ScriptableObjects using the ScriptableObject.bindGesture() method on an instance or an __gestures dict on the class which maps gesture identifiers to script names. See baseObject.ScriptableObject for details.
 - App modules no longer have key map files. All input gesture bindings must be done in the app module itself.
 - All scripts now take an InputGesture instance instead of a key press.
@@ -69,6 +74,15 @@
 - synthDriverHandler.VoiceInfo now takes an optional language argument which specifies the language of the voice.
 - SynthDriver objects now provide a language attribute which specifies the language of the current voice.
  - The base implementation uses the language specified on the VoiceInfo objects in availableVoices. This is suitable for most synthesisers which support one language per voice.
+- Braille display drivers have been enhanced to allow buttons, wheels and other controls to be bound to NVDA scripts:
+ - Drivers can provide a global input gesture map to add bindings for scripts anywhere in NVDA.
+ - They can also provide their own scripts to perform display specific functions.
+ - See braille.BrailleDisplayDriver for details and existing braille display drivers for examples.
+- The 'selfVoicing' property on AppModule classes has now been renamed to 'sleepMode'.
+- the appModule events: event_appLoseFocus and event_appGainFocus have now been renamed to event_appModule_loseFocus and event_appModule_gainFocus respectivly, in order to keep the naming sintax the same between appModules and treeInterceptors etc.
+- All braille display drivers should now use braille.BrailleDisplayDriver instead of braille.BrailleDisplayDriverWithCursor.
+ - The cursor is now managed outside of the driver.
+ - Existing drivers need only change their class statement accordingly and rename their _display method to display.
 
 
 = 2010.2 =
