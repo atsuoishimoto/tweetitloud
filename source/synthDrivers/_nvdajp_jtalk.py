@@ -18,11 +18,8 @@ import os
 import codecs
 import re
 import string
-#import unicodedata
 
 import nvwave
-#import nvdajp_dic
-
 from _jtalk_core import *
 
 _jtalk_voice_m001 = {"id": "V1", "name": "m001", "samp_rate": 16000, "fperiod":  80, "alpha": 0.42, "dir": r"synthDrivers\jtalk\voice"}
@@ -38,7 +35,6 @@ DEBUG_INFO = None # 1
 CODE = 'shift_jis' # for mecab dic
 DIC = r"synthDrivers\jtalk\dic"
 
-#VOICE = voice_args['dir'] 
 MECAB_DLL = r"synthDrivers\jtalk\libmecab.dll"
 MECABRC = r"synthDrivers\jtalk\mecabrc"
 JT_DLL = r"synthDrivers\jtalk\libopenjtalk.dll"
@@ -151,8 +147,6 @@ def predic_build():
 def predic_load():
 	global predic
 	if predic == None: predic_build()
-	#global engdic
-	#if engdic == None: engdic = engdic_load()
 
 ############################################
 # based on _espeak.py (nvda)
@@ -199,31 +193,13 @@ def _speak(msg, index=None, isCharacter=False):
 	buff = create_string_buffer(MSGLEN)
 	global isSpeaking
 	isSpeaking = True
-	# msg = unicodedata.normalize('NFKC', msg)
-	# predic_load()
 	for p in predic:
 		try:
 			msg = p[0].sub(p[1], msg)
 		except:
 			pass
 	msg = msg.lower()
-	#for p in engdic:
-	#	try:
-	#		msg = p[0].sub(p[1], msg)
-	#	except:
-	#		pass
 	for m in string.split(msg, ' '):
-		# if m == u'~': m = u'から'
-		# if m == u'～': m = u'から'
-# 		if not re.match('\d+', m):
-# 			if nvdajp_dic.dic1.has_key(m):
-# 				m = nvdajp_dic.dic1[m][4]
-# 		if m == '': continue
-		# for p in engdic:
-		# 	try:
-		# 		m = p[0].sub(p[1], m)
-		# 	except:
-		# 		pass
 		text = m.encode(CODE)
 		libjt_text2mecab(libjt, buff, text)
 		if not isSpeaking: jtalk_refresh(); return
