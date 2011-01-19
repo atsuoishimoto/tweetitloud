@@ -32,8 +32,9 @@ fperiod = 80
 
 DEBUG_INFO = None # 1
 
-CODE = 'shift_jis' # for mecab dic
-DIC = r"synthDrivers\jtalk\dic"
+# for mecab dic
+CODE = 'shift_jis' # CODE = 'utf16'
+DIC = r"synthDrivers\jtalk\dic" # DIC = r"synthDrivers\jtalk\dic-utf16"
 
 MECAB_DLL = r"synthDrivers\jtalk\libmecab.dll"
 MECABRC = r"synthDrivers\jtalk\mecabrc"
@@ -204,7 +205,7 @@ def _speak(msg, index=None, isCharacter=False):
 		str = text2mecab(text.decode(CODE)).encode(CODE) # libjt_text2mecab(libjt, buff, text); str = buff.value
 		if not isSpeaking: jtalk_refresh(); return
 		if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE)))
-		[feature, size] = Mecab_analysis(str)
+		[feature, size] = Mecab_analysis(str) # [feature, size] = Mecab_analysis_utf16(str, CODE_VOICE)
 		if not isSpeaking: jtalk_refresh(); return
 		if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
 		libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod, player.feed, is_speaking_func, 128) # player.feed() is called inside

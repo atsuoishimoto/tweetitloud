@@ -127,6 +127,32 @@ def Mecab_analysis(str):
 		if i > FECOUNT: return [mecab_feature, mecab_size]
 	return [mecab_feature, mecab_size]
 
+# def Mecab_analysis_utf16(str, CODE_VOICE):
+# 	global mecab_size
+# 	if len(str) == 0: return [None, None]
+# 	head = libmc.mecab_sparse_tonode(mecab, str)
+# 	if head == None: return [None, None]
+# 	mecab_size = 0
+# 
+# 	# make array of features
+# 	node = head
+# 	i = 0
+# 	while node:
+# 		s = node[0].stat
+# 		if s != MECAB_BOS_NODE and s != MECAB_EOS_NODE:
+# 			c = node[0].length
+# 			s = wstring_at(node[0].surface, c) + u"," + wstring_at(node[0].feature)
+# 			#print s.decode(CODE) # for debug
+# 			s = s.encode(CODE_VOICE); buf = create_string_buffer(s) # buf = create_string_buffer(s)
+# 			dst_ptr = mecab_feature[i]
+# 			src_ptr = byref(buf)
+# 			memmove(dst_ptr, src_ptr, len(s)+1)
+# 			i += 1
+# 		node = node[0].next
+# 		mecab_size = i
+# 		if i > FECOUNT: return [mecab_feature, mecab_size]
+# 	return [mecab_feature, mecab_size]
+
 def Mecab_refresh():
 	global mecab_size
 	mecab_size = 0
