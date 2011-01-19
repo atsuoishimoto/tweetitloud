@@ -445,9 +445,9 @@ def libjt_load(libjt, VOICE, engine):
 	libjt.HTS_Engine_load_gv_switch_from_fn(
 		engine, fn_gv_switch)
 
-def libjt_text2mecab(libjt, buff, txt):
-	libjt.text2mecab.argtypes = [c_char_p, c_char_p] # (char *output, char *input);
-	libjt.text2mecab(buff, txt)
+# def libjt_text2mecab(libjt, buff, txt):
+# 	libjt.text2mecab.argtypes = [c_char_p, c_char_p] # (char *output, char *input);
+# 	libjt.text2mecab(buff, txt)
 
 def libjt_refresh(libjt, engine, jpcommon, njd):
 	libjt.HTS_Engine_refresh(engine)
@@ -533,6 +533,23 @@ def pa_play(data, samp_rate = 16000):
 
 def __print(s): print s
 
+# http://hiroshiykw.blogspot.com/2007/08/python.html
+import re
+HAN_UPPER = re.compile(u"[A-Z]")
+HAN_LOWER = re.compile(u"[a-z]")
+HAN_DIGIT = re.compile(u"[0-9]")
+def han2zen(word):
+	word = HAN_UPPER.sub(lambda m: unichr(ord(u"Ａ") + ord(m.group(0)) - ord("A")), word)
+	word = HAN_LOWER.sub(lambda m: unichr(ord(u"ａ") + ord(m.group(0)) - ord("a")), word)
+	word = HAN_DIGIT.sub(lambda m: unichr(ord(u"０") + ord(m.group(0)) - ord("0")), word)
+	return word
+
+import unicodedata
+def text2mecab(text):
+	text = han2zen(unicodedata.normalize('NFKC', text))
+	text = re.sub(' ', u'　', text)
+	return text
+
 if __name__ == '__main__':
 	CODE = 'shift_jis' # for mecab dic
 	DIC = "jtalk" + os.sep + "dic"
@@ -555,16 +572,15 @@ if __name__ == '__main__':
 	Mecab_initialize(MECAB_DLL, libjt)
 	Mecab_load(DIC, MECABRC)
 	#
-	msg = u'ACROBAT Acrobat acrobat 123 日本語 孫正義 既読 材販'
+	msg = u'ACROBAT Acrobat acrobat 123 日本語 孫正義 既読 材販 カタカナ ｶﾀｶﾅ ﾋﾗｶﾞﾅ'
 	#__print(msg)
 	MSGLEN = 1000
 	text = msg.encode(CODE)
 	#__print(text)
 	buff = create_string_buffer(MSGLEN)
-	libjt_text2mecab(libjt, buff, text)
-	s = buff.value
-	# __print(s)
-	# __print(s.encode('euc-jp'))
+	# libjt_text2mecab(libjt, buff, text); s = buff.value
+	s = text2mecab(text.decode(CODE)).encode(CODE)
+	#__print(s)
 	[feature, size] = Mecab_analysis(s)
 	# Mecab_print(feature, size, __print)
 	fperiod = voice_args['fperiod']

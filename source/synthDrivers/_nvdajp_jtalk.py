@@ -201,9 +201,8 @@ def _speak(msg, index=None, isCharacter=False):
 	msg = msg.lower()
 	for m in string.split(msg, ' '):
 		text = m.encode(CODE)
-		libjt_text2mecab(libjt, buff, text)
+		str = text2mecab(text.decode(CODE)).encode(CODE) # libjt_text2mecab(libjt, buff, text); str = buff.value
 		if not isSpeaking: jtalk_refresh(); return
-		str = buff.value
 		if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE)))
 		[feature, size] = Mecab_analysis(str)
 		if not isSpeaking: jtalk_refresh(); return
