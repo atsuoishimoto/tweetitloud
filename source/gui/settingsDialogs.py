@@ -462,6 +462,9 @@ class KeyboardSettingsDialog(SettingsDialog):
 		self.capsAsNVDAModifierCheckBox=wx.CheckBox(self,wx.NewId(),label=_("Use CapsLock as an NVDA modifier key"))
 		self.capsAsNVDAModifierCheckBox.SetValue(config.conf["keyboard"]["useCapsLockAsNVDAModifierKey"])
 		settingsSizer.Add(self.capsAsNVDAModifierCheckBox,border=10,flag=wx.BOTTOM)
+		self.nconvAsNVDAModifierCheckBox=wx.CheckBox(self,wx.NewId(),label=_("Use NonConvert as an NVDA modifier key")) #nvdajp
+		self.nconvAsNVDAModifierCheckBox.SetValue(config.conf["keyboard"]["useNonConvertAsNVDAModifierKey"]) #nvdajp
+		settingsSizer.Add(self.nconvAsNVDAModifierCheckBox,border=10,flag=wx.BOTTOM) #nvdajp
 		self.numpadInsertAsNVDAModifierCheckBox=wx.CheckBox(self,wx.NewId(),label=_("Use numpad Insert as an NVDA modifier key"))
 		self.numpadInsertAsNVDAModifierCheckBox.SetValue(config.conf["keyboard"]["useNumpadInsertAsNVDAModifierKey"])
 		settingsSizer.Add(self.numpadInsertAsNVDAModifierCheckBox,border=10,flag=wx.BOTTOM)
@@ -488,6 +491,7 @@ class KeyboardSettingsDialog(SettingsDialog):
 		layout=self.kbdNames[self.kbdList.GetSelection()]
 		config.conf['keyboard']['keyboardLayout']=layout
 		config.conf["keyboard"]["useCapsLockAsNVDAModifierKey"]=self.capsAsNVDAModifierCheckBox.IsChecked()
+		config.conf["keyboard"]["useNonConvertAsNVDAModifierKey"]=self.nconvAsNVDAModifierCheckBox.IsChecked() # nvdajp
 		config.conf["keyboard"]["useNumpadInsertAsNVDAModifierKey"]=self.numpadInsertAsNVDAModifierCheckBox.IsChecked()
 		config.conf["keyboard"]["useExtendedInsertAsNVDAModifierKey"]=self.extendedInsertAsNVDAModifierCheckBox.IsChecked()
 		config.conf["keyboard"]["speakTypedCharacters"]=self.charsCheckBox.IsChecked()

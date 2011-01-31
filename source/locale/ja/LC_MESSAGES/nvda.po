@@ -2328,6 +2328,10 @@ msgstr "オプション"
 msgid "Use CapsLock as an NVDA modifier key"
 msgstr "CapsLockキーをNVDAの制御キーとして使用"
 
+#: source\gui\__init__.py:408
+msgid "Show this dialog when NVDA starts"
+msgstr "NVDA起動時にこのダイアログを表示する"
+
 #: gui/__init__.py:405
 msgid "Show this dialog when NVDA starts"
 msgstr "NVDA起動時にこのダイアログを表示する"

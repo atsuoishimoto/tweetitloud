@@ -57,6 +57,8 @@ def isNVDAModifierKey(vkCode,extended):
 		return True
 	elif config.conf["keyboard"]["useCapsLockAsNVDAModifierKey"] and vkCode==winUser.VK_CAPITAL:
 		return True
+	elif config.conf["keyboard"]["useNonConvertAsNVDAModifierKey"] and vkCode==winUser.VK_NONCONVERT: #nvdajp
+		return True
 	else:
 		return False
 

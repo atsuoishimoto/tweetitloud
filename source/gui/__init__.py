@@ -321,11 +321,13 @@ class SysTrayIcon(wx.TaskBarIcon):
 			item = menu_help.Append(wx.ID_ANY, _("What's &new"))
 			self.Bind(wx.EVT_MENU, lambda evt: os.startfile(getDocFilePath("changes.html")), item)
 			item = menu_help.Append(wx.ID_ANY, _("Web site"))
-			self.Bind(wx.EVT_MENU, lambda evt: os.startfile("http://www.nvda-project.org/"), item)
+			# self.Bind(wx.EVT_MENU, lambda evt: os.startfile("http://www.nvda-project.org/"), item)
+			self.Bind(wx.EVT_MENU, lambda evt: os.startfile("http://sourceforge.jp/projects/nvdajp/"), item) #nvdajp
 			item = menu_help.Append(wx.ID_ANY, _("License"))
 			self.Bind(wx.EVT_MENU, lambda evt: os.startfile(getDocFilePath("copying.txt", False)), item)
 			item = menu_help.Append(wx.ID_ANY, _("Contributors"))
-			self.Bind(wx.EVT_MENU, lambda evt: os.startfile(getDocFilePath("contributors.txt", False)), item)
+			# self.Bind(wx.EVT_MENU, lambda evt: os.startfile(getDocFilePath("contributors.txt", False)), item)
+			self.Bind(wx.EVT_MENU, lambda evt: os.startfile("http://sourceforge.jp/projects/nvdajp/wiki/contributors_ja"), item) #nvdajp
 		item = menu_help.Append(wx.ID_ANY, _("We&lcome dialog"))
 		self.Bind(wx.EVT_MENU, lambda evt: WelcomeDialog.run(), item)
 		menu_help.AppendSeparator()
@@ -411,6 +413,10 @@ class WelcomeDialog(wx.Dialog):
 		self.capsAsNVDAModifierCheckBox = wx.CheckBox(self, wx.ID_ANY, _("Use CapsLock as an NVDA modifier key"))
 		self.capsAsNVDAModifierCheckBox.SetValue(config.conf["keyboard"]["useCapsLockAsNVDAModifierKey"])
 		optionsSizer.Add(self.capsAsNVDAModifierCheckBox,flag=wx.TOP|wx.RIGHT,border=10)
+		self.nconvAsNVDAModifierCheckBox = wx.CheckBox(self, wx.ID_ANY, _("Use NonConvert as an NVDA modifier key")) #nvdajp
+		self.nconvAsNVDAModifierCheckBox.SetValue(config.conf["keyboard"]["useNonConvertAsNVDAModifierKey"])
+		optionsSizer.Add(self.nconvAsNVDAModifierCheckBox,flag=wx.TOP|wx.RIGHT,border=10)
+		#nvdajp done
 		self.showWelcomeDialogAtStartupCheckBox = wx.CheckBox(self, wx.ID_ANY, _("Show this dialog when NVDA starts"))
 		self.showWelcomeDialogAtStartupCheckBox.SetValue(config.conf["general"]["showWelcomeDialogAtStartup"])
 		optionsSizer.Add(self.showWelcomeDialogAtStartupCheckBox,flag=wx.TOP|wx.LEFT,border=10)
@@ -424,6 +430,7 @@ class WelcomeDialog(wx.Dialog):
 
 	def onOk(self, evt):
 		config.conf["keyboard"]["useCapsLockAsNVDAModifierKey"] = self.capsAsNVDAModifierCheckBox.IsChecked()
+		config.conf["keyboard"]["useNonConvertAsNVDAModifierKey"] = self.nconvAsNVDAModifierCheckBox.IsChecked() #nvdajp
 		config.conf["general"]["showWelcomeDialogAtStartup"] = self.showWelcomeDialogAtStartupCheckBox.IsChecked()
 		try:
 			config.save()

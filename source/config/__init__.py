@@ -113,6 +113,7 @@ outputDevice = string(default=default)
 	useCapsLockAsNVDAModifierKey = boolean(default=false)
 	useNumpadInsertAsNVDAModifierKey = boolean(default=true)
 	useExtendedInsertAsNVDAModifierKey = boolean(default=true)
+	useNonConvertAsNVDAModifierKey = boolean(default=false) #nvdajp
 	keyboardLayout = string(default="desktop")
 	speakTypedCharacters = boolean(default=true)
 	speakTypedWords = boolean(default=false)
