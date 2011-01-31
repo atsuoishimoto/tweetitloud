@@ -234,6 +234,12 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 				eventHandler.queueEvent('gainFocus',focus)
 		except:
 			log.exception("Error retrieving initial focus")
+	if not globalVars.appArgs.minimal:									# Masataka.Shinke
+		import nvdajp_keyEvents											# Masataka.Shinke
+		try:															# Masataka.Shinke
+			nvdajp_keyEvents.initialize()								# Masataka.Shinke
+		except:															# Masataka.Shinke
+			log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
 	import queueHandler
 	import watchdog
 	import baseObject
@@ -268,6 +274,11 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 	log.debug("Terminating GUI")
 	gui.terminate()
 	config.saveOnExit()
+	if not globalVars.appArgs.minimal:										# Masataka.Shinke
+		try:																# Masataka.Shinke
+			nvdajp_keyEvents.terminate()									# Masataka.Shinke
+		except:																# Masataka.Shinke
+			log.error("Error terminating nvdajp_keyEvents",exc_info=True)	# Masataka.Shinke    
 	try:
 		if globalVars.focusObject and hasattr(globalVars.focusObject,"event_loseFocus"):
 			log.debug("calling lose focus on object with focus")
