@@ -123,6 +123,8 @@ def predic_build():
 		[re.compile(u'障がい'), u'ショーガイ'],
 		[re.compile(u'聾'), u'ロー'],
 		[re.compile(u'盲'), u'モー'],
+		[re.compile(u'元に'), u'モトニ'],
+		[re.compile(u'明朝'), u'ミンチョー'],
 
 		[re.compile('\-'), ' '],
 		[re.compile('\:'), 'コロン'],
