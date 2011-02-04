@@ -125,6 +125,13 @@ def predic_build():
 		[re.compile(u'盲'), u'モー'],
 		[re.compile(u'元に'), u'モトニ'],
 		[re.compile(u'明朝'), u'ミンチョー'],
+		[re.compile(u'昔々'), u'ムカシムカシ'],
+		[re.compile(u'(Desktop|desktop|DESKTOP)'), u'デスクトップ'],
+		[re.compile(u'(Output|output|OUTPUT)'), u'アウトプット'],
+		[re.compile(u'(Nullsoft|nullsoft|NULLSOFT)'), u'ヌルソフト'],
+		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
+		[re.compile(u'(\\d+)\:(\\d+)'), u'\\1ジ\\2フン'],
+		[re.compile(u'(\\d+)\/(\\d+)/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
 
 		[re.compile('\-'), ' '],
 		[re.compile('\:'), 'コロン'],
