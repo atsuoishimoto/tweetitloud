@@ -8,9 +8,11 @@ NVDA NVDA_VERSION User Guide
 %%toc
 
 + Introduction +
-
+NonVisual Desktop Access (NVDA) is a free and open source screen reader for the Microsoft Windows operating system.
+Providing feedback via synthetic speech and Braille, it enables blind or vision impaired people to access computers running Windows for no more cost than a sighted person.
+NVDA is developed by [NV Access http://www.nvaccess.org/], with contributions from the community. 
 ++ General Features ++
-Providing feedback via synthetic speech and braille, Nonvisual Desktop Access allows blind and vision impaired people to access and interact with the Windows operating system and many third party applications.
+NVDA allows blind and vision impaired people to access and interact with the Windows operating system and many third party applications.
 
 Major highlights include:
 - Support for popular applications including web browsers, email clients, internet chat programs and office suites
@@ -48,9 +50,8 @@ NVDA supports braille codes for many languages, including contracted, uncontract
 NVDA is copyright NVDA_COPYRIGHT_YEARS NVDA contributors.
 
 NVDA is covered by the GNU General Public License (Version 2).
-You are free to share or change this software in any way you like as long as you distribute the licence along with the software, and make all source code available to anyone who wants it.
-This applies to both original and modified copies of the software, plus any software that uses code taken from this software.
-
+You are free to share or change this software in any way you like as long as it is accompanied by the license and you make all source code available to anyone who wants it.
+This applies to both original and modified copies of this software, plus any derivative works. 
 For further details, you can [view the full licence. http://www.gnu.org/licenses/old-licenses/gpl-2.0.html]
 
 + System Requirements +
@@ -840,11 +841,6 @@ For more information, please see [the Python Console article on the NVDA web sit
 ++ Reload plugins ++
 This item, once activated, reloads app modules and global plugins without restarting NVDA, which can be useful for developers.
 
-+ Further Information +
-If you require further information or assistance regarding NVDA, please visit the NVDA web site at NVDA_URL.
-Here, you can find additional documentation, as well as technical support and community resources.
-This site also provides information and resources concerning NVDA development.
-
 + Supported Speech Synthesizers +[SupportedSpeechSynths]
 This section contains information about the speech synthesizers  supported by NVDA.
 
@@ -1054,3 +1050,12 @@ Gesture identifiers consist of a two leter device code (kb for keyboard and br f
  
 Pressing keys while in Input help and then viewing the log will enable you to discover the gesture identifiers to use.
  
+Although you are free to have scripts bound to any available key, it may be problematic to use the alt key on the keyboard.
+NVDA still sends modifier keys (such as shift, control and alt) to the Operating System, even if they eventuate in a script.
+Thus, if you do use alt in a gesture, pressing this key combination may activate the menu bar, as well as executing the script.
+Therefore, it is probably best to just use Shift, control and the NVDA modifier key as modifiers.
+
++ Further Information +
+If you require further information or assistance regarding NVDA, please visit the NVDA web site at NVDA_URL.
+Here, you can find additional documentation, as well as technical support and community resources.
+This site also provides information and resources concerning NVDA development.

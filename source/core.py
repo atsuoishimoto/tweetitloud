@@ -74,6 +74,12 @@ def doStartupDialogs():
 		gui.WelcomeDialog.run()
 	if globalVars.configFileError:
 		gui.ConfigFileErrorDialog.run()
+	import inputCore
+	if inputCore.manager.userGestureMap.lastUpdateContainedError:
+		import wx
+		gui.scriptUI.MessageDialog(_("Your gesture map file contains errors.\n"
+				"More details about the errors can be found in the log file."),
+			_("gesture map File Error"), wx.OK|wx.ICON_EXCLAMATION).run()
 
 def restart():
 	"""Restarts NVDA by starting a new copy with -r."""
@@ -85,8 +91,12 @@ def resetConfiguration():
 	"""Loads the configuration, installs the correct language support and initialises audio so that it will use the configured synth and speech settings.
 	"""
 	import config
+	import braille
 	import speech
 	import languageHandler
+	import inputCore
+	log.debug("Terminating braille")
+	braille.terminate()
 	log.debug("terminating speech")
 	speech.terminate()
 	log.debug("Reloading config")
@@ -99,6 +109,12 @@ def resetConfiguration():
 	#Speech
 	log.debug("initializing speech")
 	speech.initialize()
+	#braille
+	log.debug("Initializing braille")
+	braille.initialize()
+	log.debug("Reloading user and locale input gesture maps")
+	inputCore.manager.loadUserGestureMap()
+	inputCore.manager.loadLocaleGestureMap()
 	log.info("Reverted to saved configuration")
 
 def main():
@@ -211,6 +227,9 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 	import IAccessibleHandler
 	log.debug("Initializing IAccessible support")
 	IAccessibleHandler.initialize()
+	log.debug("Initializing input core")
+	import inputCore
+	inputCore.initialize()
 	import keyboardHandler
 	log.debug("Initializing keyboard handler")
 	keyboardHandler.initialize()
@@ -334,6 +353,8 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 		mouseHandler.terminate()
 	except:
 		log.error("error terminating mouse handler",exc_info=True)
+	log.debug("Terminating input core")
+	inputCore.terminate()
 	log.debug("Terminating braille")
 	try:
 		braille.terminate()
