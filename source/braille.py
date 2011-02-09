@@ -675,6 +675,17 @@ class BrailleHandler(baseObject.AutoPropertyObject):
 		self._cells = []
 		self._cursorBlinkTimer = None
 
+	def terminate(self):
+		if self._messageCallLater:
+			self._messageCallLater.Stop()
+			self._messageCallLater = None
+		if self._cursorBlinkTimer:
+			self._cursorBlinkTimer.Stop()
+			self._cursorBlinkTimer = None
+		if self.display:
+			self.display.terminate()
+			self.display = None
+
 	def _get_tether(self):
 		return config.conf["braille"]["tetherTo"]
 
@@ -892,10 +903,18 @@ def initialize():
 	handler = BrailleHandler()
 	handler.setDisplayByName(config.conf["braille"]["display"])
 
+	# Update the display to the current focus/review position.
+	if not handler.enabled or not api.getDesktopObject():
+		# Braille is disabled or focus/review hasn't yet been initialised.
+		return
+	if handler.tether == handler.TETHER_FOCUS:
+		handler.handleGainFocus(api.getFocusObject())
+	else:
+		handler.handleReviewMove()
+
 def terminate():
 	global handler
-	if handler.display:
-		handler.display.terminate()
+	handler.terminate()
 	handler = None
 
 class BrailleDisplayDriver(baseObject.AutoPropertyObject):
@@ -936,7 +955,7 @@ class BrailleDisplayDriver(baseObject.AutoPropertyObject):
 		"""
 		# Clear the display.
 		try:
-			self.display([])
+			self.display([0] * self.numCells)
 		except:
 			# The display driver seems to be failing, but we're terminating anyway, so just ignore it.
 			pass

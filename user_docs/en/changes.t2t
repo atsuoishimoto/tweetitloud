@@ -4,10 +4,11 @@
 %!includeconf: ../changes.t2tconf
 
 = 2011.1 =
-Highlights of this release include reporting of colors for some controls; automatic reporting of new text output in mIRC, PuTTY, Tera Term and SecureCRT; support for global plugins; announcement of bullets and numbering in Microsoft Word; additional key bindings for braille displays, including keys to move to the next and previous line; and support for several Baum, HumanWare and APH braille displays.
+Highlights of this release include automatic reporting of new text output in mIRC, PuTTY, Tera Term and SecureCRT; support for global plugins; announcement of bullets and numbering in Microsoft Word; additional key bindings for braille displays, including keys to move to the next and previous line; support for several Baum, HumanWare and APH braille displays; and reporting of colors for some controls, including IBM Lotus Symphony text controls.
 
 == New Features ==
 - Colors can now be reported for some controls. Automatic announcement can be configured in the Document Formatting preferences dialog. It can also be reported on demand using the report text formatting command (NVDA+f).
+ - Initially, this is supported in standard IAccessible2 editable text controls (such as in Mozilla applications), RichEdit controls (such as in Wordpad) and IBM Lotus Symphony text controls.
 - In virtual buffers, you can now select by page (using shift+pageDown and shift+pageUp) and paragraph (using shift+control+downArrow and shift+control+upArrow). (#639)
 - NVDA now automatically reports new text output in mIRC, PuTTY, Tera Term and SecureCRT. (#936)
 - Users can now add new key bindings or override existing ones for any script in NVDA by providing a single user input gesture map. (#194)
@@ -21,6 +22,8 @@ Highlights of this release include reporting of colors for some controls; automa
 - NVDA now remembers the position you were at when returning to a previously visited web page. This applies until either the browser or NVDA is exited. (#132)
 - Handy Tech braille displays can now be used without installing the Handy Tech universal driver. (#854)
 - Support for several Baum, HumanWare and APH braille displays. (#937)
+- The status bar in Media Player Classic Home Cinema is now recognised.
+- The Freedom Scientific Focus 40 Blue braille display can now be used when connected via bluetooth. (#1345)
 
 
 == Changes ==
@@ -65,6 +68,9 @@ Highlights of this release include reporting of colors for some controls; automa
 - NVDA now switches to the appropriate braille display driver when you revert to saved configuration. (#1346)
 - The Visual Studio 2008 Project Wizard is read correctly again. (#974)
 - NVDA no longer completely fails to work in applications which contain non-ASCII characters in their executable name. (#1352)
+- When reading by line in AkelPad with word wrap enabled, NVDA no longer reads the first character of the following line at the end of the current line.
+- In the Visual Studio 2005/2008 code editor, NVDA no longer reads the entire text after every typed character. (#975)
+- Fixed the issue where some braille displays weren't cleared properly when NVDA was exited or the display was changed.
 
 
 == Changes for Developers ==

@@ -10,7 +10,8 @@ NVDA NVDA_VERSION User Guide
 + Introduction +
 NonVisual Desktop Access (NVDA) is a free and open source screen reader for the Microsoft Windows operating system.
 Providing feedback via synthetic speech and Braille, it enables blind or vision impaired people to access computers running Windows for no more cost than a sighted person.
-NVDA is developed by [NV Access http://www.nvaccess.org/], with contributions from the community. 
+NVDA is developed by [NV Access http://www.nvaccess.org/], with contributions from the community.
+
 ++ General Features ++
 NVDA allows blind and vision impaired people to access and interact with the Windows operating system and many third party applications.
 
@@ -80,8 +81,7 @@ If you already have the NVDA installer, simply press enter or double click on th
 
 As the installer loads, you will hear the NVDA installation music.
 Once loaded, a temporary copy of NVDA will allow you to follow the prompts of the installer and install NVDA.
-Note that if you were running another copy of NVDA at the time you started the installer, a message will appear telling you that your previous copy of NVDA will be closed.
-When you press enter on this message, the installer will close your previous copy and start its own one.
+Note that if you were running another copy of NVDA at the time you started the installer, the installer will close your previous copy and start its own.
 This is necessary so that the installer can properly update any changed files.
 At this point, if you have another copy of NVDA already installed, the NVDA installer will uninstall it for you, and then it will commence to install NVDA.
 
@@ -879,7 +879,7 @@ To download this synthesizer, please visit the downloads section of the Russian 
 This section contains information about the Braille displays supported by NVDA.
 
 ++ Freedom Scientific Focus/PAC Mate Series ++
-All Focus and PAC Mate displays from [Freedom Scientific http://www.freedomscientific.com/] are supported.
+All Focus and PAC Mate displays from [Freedom Scientific http://www.freedomscientific.com/] are supported when connected via USB or bluetooth.
 You will need the Freedom Scientific braille display drivers installed on your system.
 If you do not have them already, you can obtain them from http://www.freedomscientific.com/downloads/focus-40-blue/focus-40-blue-downloads.asp.
 Although this page only mentions the Focus 40 Blue display, the driver supports all Freedom Scientific displays.
@@ -898,7 +898,7 @@ Please see the display's documentation for descriptions of where these keys can 
 %kc:endInclude
 
 ++ Optelec ALVA BC640/680 ++
-Both the ALVA BC640 and BC680 displays from [Optelec http://www.optelec.com/] are supported.
+Both the ALVA BC640 and BC680 displays from [Optelec http://www.optelec.com/] are supported when connected via USB or bluetooth.
 You do not need any specific drivers to be installed to use these displays.
 Just plug in the display and configure NVDA to use it.
 
@@ -927,7 +927,7 @@ Please see the display's documentation for descriptions of where these keys can 
 %kc:endInclude
 
 ++ Handy Tech Displays ++
-NVDA supports all displays from [Handy Tech http://www.handytech.de/].
+NVDA supports all displays from [Handy Tech http://www.handytech.de/] when connected via USB or bluetooth.
 For older USB displays, you will need to install the USB drivers from Handy Tech on your system.
 
 Following are the key assignments for this display with NVDA.
@@ -1005,21 +1005,30 @@ Please see the [BRLTTY key tables documentation http://mielke.cc/brltty/doc/driv
 
 + Advanced Topics +
 
-++ Remapping key assignments and Other Input Gestures ++
+++ Remapping Key Assignments and Other Input Gestures ++
 Users are able to provide or override mappings of input gestures (such as key presses) to scripts in a special file in the user's NVDA configuration directory.
 This file is called gestures.ini.
 
 This file uses standard ini syntax.
+The file may contain multiple sections and each section may have one or more entries.
+
 Each section provides mappings for scripts in a particular Python module and class inside NVDA.
-The section name should be the Python module and class separated by a dot (.).
- 
- The keys of each section are the names of the scripts you wish to bind to.
- The value of each key is a comma (,) separated list of gesture identifiers which represent the various input gestures that should be bound to that particular script.
+- The section name should be the Python module and class separated by a dot (.).
+- The key of each entry is the name of the script to which input gestures should be bound.
+Alternatively, you can use None to unbind input gestures from a script to which they were previously bound.
+- The entry value is a comma (,) separated list of gesture identifiers for the input gestures that should be bound.
+-
 
-Multiple keys can be provided for each section, and multiple sections can be provided in the file.
+Gesture identifiers consist of a two leter device code (kb for keyboard and br for braille display), an optional sub-device or keyboard layout in brackets, a colon, and then one or more key names separated by a plus (+) sign.
 
-In order to find out gesture identifiers as well as the names of scripts and the class and module in which they are contained, you can turn on Input Help, activate the gesture (press the key) and, after turning off Input help, activate View log in the tools menu and examine the recent log entries.
+In order to discover gesture identifiers, script names and the class and module in which they are contained, you can:
++ Turn on Input Help.
++ Activate the gesture (press the key).
++ Turn off input help.
++ Activate View log in the NVDA Tools menu.
++ Examine the recent log entries.
 One of these should provide information about the input gesture you sent, including the module.class and script if it is bound to one.
++
 
 Following is an example of how you could bind NVDA+shift+t to the date time script.
 
@@ -1044,12 +1053,13 @@ If the file does not yet exist, you would create a text file called gestures.ini
 
 This would bind the key press NVDA+shift+t (in any keyboard layout) to the dateTime script.
 
-You can also use the special script name of None to unbind an input gesture from whatever script it was bound to in that module and class.
+Note that the original NVDA+f12 binding would still work.
+If you wanted to remove this binding, you would add the following line:
 
-Gesture identifiers consist of a two leter device code (kb for keyboard and br for braille display), an optional sub-device or keyboard layout in brackets, a colon, and then one or more key names separated by a plus (+) sign.
- 
-Pressing keys while in Input help and then viewing the log will enable you to discover the gesture identifiers to use.
- 
+```
+	None = kb:NVDA+f12
+```
+
 Although you are free to have scripts bound to any available key, it may be problematic to use the alt key on the keyboard.
 NVDA still sends modifier keys (such as shift, control and alt) to the Operating System, even if they eventuate in a script.
 Thus, if you do use alt in a gesture, pressing this key combination may activate the menu bar, as well as executing the script.

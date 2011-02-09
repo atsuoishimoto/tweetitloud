@@ -126,6 +126,8 @@ def predic_build():
 		[re.compile(u'元に'), u'モトニ'],
 		[re.compile(u'明朝'), u'ミンチョー'],
 		[re.compile(u'昔々'), u'ムカシムカシ'],
+		[re.compile(u'(Plugins|plugins|PLUGINS)'), u'プラグインズ'],
+		[re.compile(u'(Facebook|facebook|FACEBOOK)'), u'フェイスブック'],
 		[re.compile(u'(Desktop|desktop|DESKTOP)'), u'デスクトップ'],
 		[re.compile(u'(Output|output|OUTPUT)'), u'アウトプット'],
 		[re.compile(u'(Nullsoft|nullsoft|NULLSOFT)'), u'ヌルソフト'],
