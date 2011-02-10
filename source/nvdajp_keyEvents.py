@@ -11,9 +11,10 @@ import queueHandler			# NVDA
 from logHandler import log	# NVDA
 from ctypes import *
 lib = windll.LoadLibrary("nvdajpime.dll");
-
+_last_ime_status = 0 ## 2011-02-10 by nishimotz
 # callback
 def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):
+	global _last_ime_status
 	if c_wchar_p(DiffValue).value!="":
 		if LastKeyCode in (winUser.VK_SPACE,
 			winUser.VK_CONVERT,
@@ -35,12 +36,22 @@ def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):
 			queueHandler.queueFunction(queueHandler.eventQueue,ui.message,c_wchar_p(DiffValue).value)
 	#elif (LastKeyCode==winUser.VK_RETURN) & (c_wchar_p(OldValue).value!=""):
 	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,c_wchar_p(OldValue).value)
-	elif (LastKeyCode==242) & (ImeOpenStatus==0):
+	## 2011-02-10 by nishimotz
+	# elif (LastKeyCode==242) & (ImeOpenStatus==0):
+	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＮ")
+	# elif (LastKeyCode==244) & (ImeOpenStatus==0):
+	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＮ")
+	# elif (LastKeyCode==243) & (ImeOpenStatus==1):
+	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＦＦ")
+	elif (LastKeyCode==242) & (_last_ime_status==0):
 		queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＮ")
-	elif (LastKeyCode==244) & (ImeOpenStatus==0):
+		_last_ime_status = 1
+	elif (LastKeyCode==244) & (_last_ime_status==0):
 		queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＮ")
-	elif (LastKeyCode==243) & (ImeOpenStatus==1):
+		_last_ime_status = 1
+	elif (LastKeyCode==243) & (_last_ime_status==1):
 		queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＦＦ")
+		_last_ime_status = 0
 WINFUNC = WINFUNCTYPE(c_void_p,c_uint,c_wchar_p,c_uint,c_wchar_p,c_wchar_p)
 cmp_func = WINFUNC(py_cmp_func)
 

@@ -71,7 +71,7 @@ class SynthDriver(SynthDriver):
 		return
 
 	def _getAvailableVoices(self):
-		_nvdajp_jtalk.log.info("_getAvailableVoices called")
+		_nvdajp_jtalk.log.debug("_getAvailableVoices called")
 		voices = OrderedDict() # []
 		for v in _nvdajp_jtalk._jtalk_voices:
 			#voices.append(VoiceInfo(v['id'], v['name']))
@@ -79,11 +79,11 @@ class SynthDriver(SynthDriver):
 		return voices
 
 	def _get_voice(self):
-		_nvdajp_jtalk.log.info("_get_voice called")
+		_nvdajp_jtalk.log.debug("_get_voice called")
 		return self.voice_id # "V1"
 
 	def _set_voice(self, identifier):
-		_nvdajp_jtalk.log.info("_set_voice %s" % (identifier))
+		_nvdajp_jtalk.log.debug("_set_voice %s" % (identifier))
 		rate = _nvdajp_jtalk.get_rate()
 		for v in _nvdajp_jtalk._jtalk_voices:
 			if v['id'] == identifier:

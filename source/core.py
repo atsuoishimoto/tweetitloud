@@ -132,6 +132,14 @@ def _setInitialFocus():
 	except:
 		log.exception("Error retrieving initial focus")
 
+def _set_nvdajp_keyEvents():
+	if not globalVars.appArgs.minimal:									# Masataka.Shinke
+		import nvdajp_keyEvents											# Masataka.Shinke
+		try:															# Masataka.Shinke
+			nvdajp_keyEvents.initialize()								# Masataka.Shinke
+		except:															# Masataka.Shinke
+			log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
+
 def main():
 	"""NVDA's core main loop.
 This initializes all modules such as audio, IAccessible, keyboard, mouse, and GUI. Then it initialises the wx application object and installs the core pump timer, which checks the queues and executes functions every 1 ms. Finally, it starts the wx main loop.
@@ -260,18 +268,20 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 		except:
 			log.error("", exc_info=True)
 		wx.CallAfter(doStartupDialogs)
-	# nvdajp begin
-	if not globalVars.appArgs.minimal:									# Masataka.Shinke
-		import nvdajp_keyEvents											# Masataka.Shinke
-		try:															# Masataka.Shinke
-			nvdajp_keyEvents.initialize()								# Masataka.Shinke
-		except:															# Masataka.Shinke
-			log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
-	# nvdajp end
 	import queueHandler
 	# Queue the handling of initial focus,
 	# as API handlers might need to be pumped to get the first focus event.
 	queueHandler.queueFunction(queueHandler.eventQueue, _setInitialFocus)
+	#
+	# nvdajp begin
+	#if not globalVars.appArgs.minimal:									# Masataka.Shinke
+	#	import nvdajp_keyEvents											# Masataka.Shinke
+	#	try:															# Masataka.Shinke
+	#		nvdajp_keyEvents.initialize()								# Masataka.Shinke
+	#	except:															# Masataka.Shinke
+	#		log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
+	# nvdajp end
+	queueHandler.queueFunction(queueHandler.eventQueue, _set_nvdajp_keyEvents)
 	import watchdog
 	import baseObject
 	class CorePump(wx.Timer):
