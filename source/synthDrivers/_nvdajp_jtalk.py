@@ -140,6 +140,7 @@ def predic_build():
 		[re.compile(u'(Desktop|desktop|DESKTOP)'), u'デスクトップ'],
 		[re.compile(u'(Output|output|OUTPUT)'), u'アウトプット'],
 		[re.compile(u'(Nullsoft|nullsoft|NULLSOFT)'), u'ヌルソフト'],
+		[re.compile(u'(Cygdrive|cygdrive|CYGDRIVE)'), u'シグドライブ'],
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
 		[re.compile(u'(\\d+)\:(\\d+)'), u'\\1ジ\\2フン'],
 		[re.compile(u'(\\d+)\/(\\d+)/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
@@ -222,7 +223,7 @@ def _speak(msg, index=None, isCharacter=False):
 	msg = msg.lower()
 	for m in string.split(msg, ' '):
 		text = m.encode(CODE)
-		str = text2mecab(text.decode(CODE)).encode(CODE) # libjt_text2mecab(libjt, buff, text); str = buff.value
+		libjt_text2mecab(libjt, buff, text); str = buff.value #str = text2mecab(text.decode(CODE)).encode(CODE) # 
 		if not isSpeaking: jtalk_refresh(); return
 		if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE)))
 		[feature, size] = Mecab_analysis(str) # [feature, size] = Mecab_analysis_utf16(str, CODE_VOICE)

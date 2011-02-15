@@ -471,10 +471,6 @@ def libjt_load(libjt, VOICE, engine):
 	libjt.HTS_Engine_load_gv_switch_from_fn(
 		engine, fn_gv_switch)
 
-# def libjt_text2mecab(libjt, buff, txt):
-# 	libjt.text2mecab.argtypes = [c_char_p, c_char_p] # (char *output, char *input);
-# 	libjt.text2mecab(buff, txt)
-
 def libjt_refresh(libjt, engine, jpcommon, njd):
 	libjt.HTS_Engine_refresh(engine)
 	libjt.JPCommon_refresh(jpcommon)
@@ -538,6 +534,28 @@ def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod=80, fee
 		#libjt.jt_save_riff("_out.wav", engine)
 	return buf
 
+def libjt_text2mecab(libjt, buff, txt):
+	libjt.text2mecab.argtypes = [c_char_p, c_char_p] # (char *output, char *input);
+	libjt.text2mecab(buff, txt)
+
+# http://hiroshiykw.blogspot.com/2007/08/python.html
+import re
+HAN_UPPER = re.compile(u"[A-Z]")
+HAN_LOWER = re.compile(u"[a-z]")
+HAN_DIGIT = re.compile(u"[0-9]")
+def han2zen(word):
+	word = HAN_UPPER.sub(lambda m: unichr(ord(u"Ａ") + ord(m.group(0)) - ord("A")), word)
+	word = HAN_LOWER.sub(lambda m: unichr(ord(u"ａ") + ord(m.group(0)) - ord("a")), word)
+	word = HAN_DIGIT.sub(lambda m: unichr(ord(u"０") + ord(m.group(0)) - ord("0")), word)
+	return word
+
+import unicodedata
+def text2mecab(text):
+	text = han2zen(unicodedata.normalize('NFKC', text))
+	text = re.sub(' ', u'　', text)
+	text = re.sub(',', u'，', text)
+	return text
+
 def pa_play(data, samp_rate = 16000):
 	# requires pyaudio (PortAudio wrapper)
 	# http://people.csail.mit.edu/hubert/pyaudio/
@@ -558,23 +576,6 @@ def pa_play(data, samp_rate = 16000):
 	p.terminate()
 
 def __print(s): print s
-
-# http://hiroshiykw.blogspot.com/2007/08/python.html
-import re
-HAN_UPPER = re.compile(u"[A-Z]")
-HAN_LOWER = re.compile(u"[a-z]")
-HAN_DIGIT = re.compile(u"[0-9]")
-def han2zen(word):
-	word = HAN_UPPER.sub(lambda m: unichr(ord(u"Ａ") + ord(m.group(0)) - ord("A")), word)
-	word = HAN_LOWER.sub(lambda m: unichr(ord(u"ａ") + ord(m.group(0)) - ord("a")), word)
-	word = HAN_DIGIT.sub(lambda m: unichr(ord(u"０") + ord(m.group(0)) - ord("0")), word)
-	return word
-
-import unicodedata
-def text2mecab(text):
-	text = han2zen(unicodedata.normalize('NFKC', text))
-	text = re.sub(' ', u'　', text)
-	return text
 
 if __name__ == '__main__':
 	CODE = 'shift_jis' # for mecab dic
