@@ -10,7 +10,7 @@ import ui					# NVDA
 import queueHandler			# NVDA
 from logHandler import log	# NVDA
 from ctypes import *
-lib = windll.LoadLibrary("nvdajpime.dll");
+lib = windll.LoadLibrary("lib/nvdajpime.dll");
 _last_ime_status = 0 ## 2011-02-10 by nishimotz
 # callback
 def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):

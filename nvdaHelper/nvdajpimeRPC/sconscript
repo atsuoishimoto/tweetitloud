@@ -1,0 +1,65 @@
+﻿#A part of NonVisual Desktop Access (NVDA)
+#Copyright (C) 2006-2010 NVDA Contributors <http://www.nvda-project.org/>
+#This file is covered by the GNU General Public License.
+#See the file COPYING for more details.
+#
+# nvdajpime
+# by Masataka Shinke
+
+Import([
+	'env',
+])
+
+#LibName='nvdajpimeRPC_%s'%('64' if env['TARGET_ARCH']=='x86_64' else '32')
+LibName='nvdajpimeRPC'
+cppdef=u'%s'%('TARGET_64' if env['TARGET_ARCH']=='x86_64' else 'TARGET_32')
+
+winIPCUtilsObj=env.Object('./winIPCUtils','../common/winIPCUtils.cpp')
+
+controllerRPCHeader,controllerRPCClientSource=env.MSRPCStubs(
+	target=LibName,
+	source=[
+		'../interfaces/nvdaController/nvdaController.idl',
+		'../interfaces/nvdaController/nvdaController.acf',
+	],
+	MSRPCStubs_noServer=True,
+	MSRPCStubs_prefix=LibName+'_',
+)
+
+
+clientLib=env.SharedLibrary(
+	target=LibName,
+	source=[
+		'dllmain.cpp',
+		'nvdajpime.cpp',
+		'tls.cpp',
+		'tsf.cpp',
+		winIPCUtilsObj,
+		controllerRPCClientSource,
+	],
+	LIBS=[
+		'user32',
+		'rpcrt4',
+		'kernel32',
+		'gdi32',
+		'winspool',
+		'comdlg32',
+		'advapi32',
+		'shell32',
+		'ole32',
+		'oleaut32',
+		'uuid',
+		'odbc32',
+		'odbccp32',
+		'imm32',
+	],
+	CPPDEFINES=[
+		'_UNICODE',
+		'UNICODE',
+		cppdef,
+		'NVDAJPIME_EXPORTS',
+		'NVDAJPIME_RPC',
+	],
+)
+
+Return(['clientLib','controllerRPCHeader'])
