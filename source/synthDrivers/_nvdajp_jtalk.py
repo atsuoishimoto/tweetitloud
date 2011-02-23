@@ -144,6 +144,9 @@ def predic_build():
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
 		[re.compile(u'(\\d+)\:(\\d+)'), u'\\1ジ\\2フン'],
 		[re.compile(u'(\\d+)\/(\\d+)/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'(\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
 
 		[re.compile('\-'), ' '],
 		[re.compile('\:'), 'コロン'],
