@@ -80,6 +80,7 @@ def predic_build():
 
 		[re.compile(u'　'), ' '],
 		[re.compile(u'。'), ' '],
+		[re.compile(u'．'), ' '],
 		[re.compile(u'・'), ' '],
 		[re.compile(u'、'), ' '],
 		[re.compile(u'：'), ' '],
@@ -98,6 +99,9 @@ def predic_build():
 		[re.compile(u'’'), ''],
 		[re.compile(u'＜'), ' '],
 		[re.compile(u'＞'), ' '],
+		[re.compile(u'を'), u'を '],
+		[re.compile(u'（'), ' '],
+		[re.compile(u'）'), ' '],
 
 		[re.compile(u'マイ '), u'マイ'],
 		[re.compile(u'コントロール パネル'), u'コントロールパネル'],

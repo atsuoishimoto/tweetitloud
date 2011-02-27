@@ -140,6 +140,13 @@ def _set_nvdajp_keyEvents():
 		except:															# Masataka.Shinke
 			log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
 
+def _unload_nvdajp_keyEvents():
+	if not globalVars.appArgs.minimal:										# Masataka.Shinke
+		try:																# Masataka.Shinke
+			import nvdajp_keyEvents; nvdajp_keyEvents.terminate()			# Masataka.Shinke
+		except:															# Masataka.Shinke
+			log.error("Error terminating nvdajp_keyEvents",exc_info=True)	# Masataka.Shinke    
+
 def main():
 	"""NVDA's core main loop.
 This initializes all modules such as audio, IAccessible, keyboard, mouse, and GUI. Then it initialises the wx application object and installs the core pump timer, which checks the queues and executes functions every 1 ms. Finally, it starts the wx main loop.
@@ -281,7 +288,7 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 	#	except:															# Masataka.Shinke
 	#		log.exception("Error retrieving initial nvdajp_keyEvents")	# Masataka.Shinke
 	# nvdajp end
-	queueHandler.queueFunction(queueHandler.eventQueue, _set_nvdajp_keyEvents)
+	queueHandler.queueFunction(queueHandler.eventQueue, _set_nvdajp_keyEvents) # nvdajp
 	import watchdog
 	import baseObject
 	class CorePump(wx.Timer):
@@ -315,11 +322,12 @@ This initializes all modules such as audio, IAccessible, keyboard, mouse, and GU
 	log.debug("Terminating GUI")
 	gui.terminate()
 	config.saveOnExit()
-	if not globalVars.appArgs.minimal:										# Masataka.Shinke
-		try:																# Masataka.Shinke
-			nvdajp_keyEvents.terminate()									# Masataka.Shinke
-		except:																# Masataka.Shinke
-			log.error("Error terminating nvdajp_keyEvents",exc_info=True)	# Masataka.Shinke    
+	#if not globalVars.appArgs.minimal:										# Masataka.Shinke
+	#	try:																# Masataka.Shinke
+	#		import nvdajp_keyEvents; nvdajp_keyEvents.terminate()			# Masataka.Shinke
+	#	except:															# Masataka.Shinke
+	#		log.error("Error terminating nvdajp_keyEvents",exc_info=True)	# Masataka.Shinke    
+	_unload_nvdajp_keyEvents() # nvdajp
 	try:
 		if globalVars.focusObject and hasattr(globalVars.focusObject,"event_loseFocus"):
 			log.debug("calling lose focus on object with focus")
