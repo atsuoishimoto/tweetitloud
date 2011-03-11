@@ -581,7 +581,9 @@ if __name__ == '__main__':
 	CODE = 'shift_jis' # for mecab dic
 	DIC = "jtalk" + os.sep + "dic"
 	# DIC = "../../../../jtalk/dic"
-	VOICE = "jtalk" + os.sep + "voice"
+	VOICES_DIR = "jtalk"
+	M001_VOICE_DIR = VOICES_DIR + os.sep + "voice"
+	MEI_VOICE_DIR = VOICES_DIR + os.sep + "mei_normal"
 	MECABRC = "jtalk" + os.sep + "mecabrc"
 
 	MECAB_DLL = "jtalk" + os.sep + "libmecab.dll"
@@ -591,15 +593,16 @@ if __name__ == '__main__':
 	njd = NJD()
 	jpcommon = JPCommon()
 	engine = HTS_Engine()
-	voice_m001 = {"samp_rate": 16000, "fperiod":  80, "alpha": 0.42}
-	# voice_mei  = {"samp_rate": 48000, "fperiod": 240, "alpha": 0.55}
+	voice_m001 = {"samp_rate": 16000, "fperiod":  80, "alpha": 0.42, "voicedir": M001_VOICE_DIR}
+	voice_mei  = {"samp_rate": 48000, "fperiod": 240, "alpha": 0.55, "voicedir": MEI_VOICE_DIR}
 	voice_args = voice_m001
 	libjt = libjt_initialize(JT_DLL, njd, jpcommon, engine, **voice_args)
-	libjt_load(libjt, VOICE, engine)
+	libjt_load(libjt, voice_args['voicedir'], engine)
 	Mecab_initialize(MECAB_DLL, libjt)
 	Mecab_load(DIC, MECABRC)
 	#
-	msg = u'ACROBAT Acrobat acrobat 123 日本語 孫正義 既読 材販 カタカナ ｶﾀｶﾅ ﾋﾗｶﾞﾅ'
+	#msg = u'ACROBAT Acrobat acrobat 123 日本語 孫正義 既読 材販 カタカナ ｶﾀｶﾅ ﾋﾗｶﾞﾅ'
+	msg = u'使用頻度や好みなどに応じた最適形態の違いが入力システムに考慮されていなければならないので使用頻度や好みなどに応じた最適形態の違いが入力システムに考慮されていなければ．'
 	#__print(msg)
 	MSGLEN = 1000
 	text = msg.encode(CODE)
@@ -613,7 +616,7 @@ if __name__ == '__main__':
 	fperiod = voice_args['fperiod']
 	data = libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod)
 	if data != None: 
-		pa_play(data)
+		pa_play(data, voice_args['samp_rate'])
 		import wave
 		w = wave.Wave_write("_test.wav")
 		w.setparams( (1, 2, voice_args['samp_rate'], len(data)/2, 'NONE', 'not compressed') )
