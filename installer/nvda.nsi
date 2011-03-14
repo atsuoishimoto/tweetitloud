@@ -229,7 +229,7 @@ CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$(shortcut_uninstall).lnk" "$INSTDI
 WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir" "$INSTDIR"
 WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "DisplayName" "${PRODUCT} ${VERSION}"
 WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "DisplayVersion" "${VERSION}"
-WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "DisplayIcon" "$INSTDIR\images\nvda.ico"
+WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "DisplayIcon" "$INSTDIR\images\nvdajp.ico"
 WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "URLInfoAbout" "http://www.nvda-project.org/"
 WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "Publisher" "${PUBLISHER}"
 WriteRegStr ${INSTDIR_REG_ROOT} ${INSTDIR_REG_KEY} "UninstallString" "$INSTDIR\Uninstall.exe"
