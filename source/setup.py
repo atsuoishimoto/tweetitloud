@@ -136,7 +136,7 @@ setup(
 		{
 			"script":"nvda.pyw",
 			"uac_info": ("asInvoker", False),
-			"icon_resources":[(1,"images/nvda.ico")],
+			"icon_resources":[(1,"images/nvdajp.ico")],
 			"version":"0.0.0.0",
 			"description":"NVDA application",
 			"product_version":version,
@@ -144,7 +144,7 @@ setup(
 		},
 		{
 			"script": "nvda_slave.pyw",
-			"icon_resources": [(1,"images/nvda.ico")],
+			"icon_resources": [(1,"images/nvdajp.ico")],
 			"version": "0.0.0.0",
 			"description": "NVDA slave",
 			"product_version": version,
@@ -153,7 +153,7 @@ setup(
 	],
 	service=[{
 		"modules": ["nvda_service"],
-		"icon_resources": [(1, "images/nvda.ico")],
+		"icon_resources": [(1, "images/nvdajp.ico")],
 		"version": "0.0.0.0",
 		"description": "NVDA service",
 		"product_version": version,
