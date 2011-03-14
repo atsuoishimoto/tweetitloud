@@ -28,7 +28,7 @@ import api
 ### Constants
 appTitle = "NVDA"
 NVDA_PATH = os.getcwdu()
-ICON_PATH=os.path.join(NVDA_PATH, "images", "nvda.ico")
+ICON_PATH=os.path.join(NVDA_PATH, "images", "nvdajp.ico")
 
 ExternalCommandEvent, evt_externalCommand = newevent.NewCommandEvent()
 id_showGuiCommand=wx.NewId()
