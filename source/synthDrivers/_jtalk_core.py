@@ -383,6 +383,9 @@ def libjt_initialize(JT_DLL, njd, jpcommon, engine, **args):
 	libjt.jt_speech_ptr.restype = c_short_p
 	libjt.jt_save_logs.argtypes = [c_char_p, HTS_Engine_ptr, NJD_ptr]
 	libjt.jt_save_riff.argtypes = [c_char_p, HTS_Engine_ptr]
+	libjt.jt_speech_normalize.argtypes = [HTS_Engine_ptr, c_short]
+	libjt.jt_trim_silence.argtypes = [HTS_Engine_ptr, c_short]
+	libjt.jt_trim_silence.restype = c_int
 
 	libjt.NJD_clear.argtypes = [NJD_ptr]
 	libjt.JPCommon_clear.argtypes = [JPCommon_ptr]
@@ -496,7 +499,7 @@ def trim_silence(buf, byte_count, thres=64):
 	# if DEBUG_INFO: logwrite("trim_silence (%d:%d)/%d" % (begin_pos, end_pos, byte_count))
 	return buf[begin_pos:end_pos]
 
-def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod=80, feed_func_=None, is_speaking_func_=None, thres_=64):
+def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod=80, feed_func_=None, is_speaking_func_=None, thres_=32, level_=32767):
 	if feature == None or size == None: return None
 	libjt.HTS_Engine_set_fperiod(engine, fperiod) # 80(point=5ms) frame period
 	libjt.mecab2njd(njd, feature, size)
@@ -524,11 +527,13 @@ def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod=80, fee
 			libjt_refresh(libjt, engine, jpcommon, njd)
 			Mecab_refresh()
 			return None
-		total_nsample = libjt.jt_total_nsample(engine)
+		libjt.jt_speech_normalize(engine, level_)
+		#total_nsample = libjt.jt_total_nsample(engine)
+		total_nsample = libjt.jt_trim_silence(engine, thres_)
 		speech_ptr = libjt.jt_speech_ptr(engine)
 		byte_count = total_nsample * sizeof(c_short)
 		buf = string_at(speech_ptr, byte_count)
-		buf = trim_silence(buf, byte_count, thres_)
+		#buf = trim_silence(buf, byte_count, thres_)
 		if feed_func_: feed_func_(buf)
 		#libjt.jt_save_logs("_logfile", engine, njd)
 		#libjt.jt_save_riff("_out.wav", engine)

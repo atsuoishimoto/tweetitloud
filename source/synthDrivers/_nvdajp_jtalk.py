@@ -33,8 +33,8 @@ fperiod = 80
 DEBUG_INFO = None # 1
 
 # for mecab dic
-CODE = 'shift_jis' # CODE = 'utf16'
-DIC = r"synthDrivers\jtalk\dic" # DIC = r"synthDrivers\jtalk\dic-utf16"
+CODE = 'cp932' # shift_jis
+DIC = r"synthDrivers\jtalk\dic" 
 
 MECAB_DLL = r"synthDrivers\jtalk\libmecab.dll"
 MECABRC = r"synthDrivers\jtalk\mecabrc"
@@ -45,7 +45,6 @@ jpcommon = JPCommon()
 engine = HTS_Engine()
 libjt = None
 predic = None
-engdic = None
 logwrite = None
 
 lastIndex = None
@@ -66,112 +65,179 @@ def jtalk_clear():
 def predic_build():
 	global predic
 	predic = [
-# 		[re.compile(u'^ー'), u'チョーオン'],
-# 		[re.compile(u'^？'), u'クエッションマーク'],
-# 		[re.compile(u'^！'), u'びっくりマーク'],
-# 		[re.compile(u'^ッ'), u'コモジノツ'], #カタカナ 
-# 		[re.compile(u'^っ'), u'コモジノツ'], #ヒラガナ 
-# 		[re.compile(u'^　'), u'ゼンカクスペース'],
-# 		[re.compile(u'^。'), u'クテン'],
-# 		[re.compile(u'^・'), u'ナカテン'],
-# 		[re.compile(u'^、'), u'トウテン'],
-# 		[re.compile(u'^．'), u'ピリオド'],
-# 		[re.compile(u'^〔'), u'ヒラキキッコー'],
+		[re.compile(u'\ufffd'), u' '],
+ 		[re.compile(u'(\\?)々'), u'\\1\\1'],
 
+		## zenkaku to hankaku convert
 		[re.compile(u'　'), ' '],
-		[re.compile(u'。'), ' '],
-		[re.compile(u'．'), ' '],
-		[re.compile(u'・'), ' '],
-		[re.compile(u'、'), ' '],
-		[re.compile(u'，'), ' '],
-		[re.compile(u'：'), ' '],
-		[re.compile(u'；'), ' '],
+		[re.compile(u'．'), '.'],
+		[re.compile(u'，'), ','],
+		[re.compile(u'；'), ';'],
+
+		[re.compile(u'：'), u':'],
+ 		[re.compile(u'？'), u' '],
+		[re.compile(u'／'), u'/'],
 		[re.compile(u'｜'), '|'],
 		[re.compile(u'－'), '-'],
-		[re.compile(u'～'), u'から'],
-		[re.compile(u'~'), ' '],
-		[re.compile(u'\u2014'), ' '],
-		[re.compile(u'\u2022'), ' '],
+		[re.compile(u'＝'), '='],
+		[re.compile(u'＜'), '>'],
+		[re.compile(u'＞'), '<'],
+
+		# normalize phone number
+		[re.compile(u'０'), u'0'],
+		[re.compile(u'１'), u'1'],
+		[re.compile(u'２'), u'2'],
+		[re.compile(u'３'), u'3'],
+		[re.compile(u'４'), u'4'],
+		[re.compile(u'５'), u'5'],
+		[re.compile(u'６'), u'6'],
+		[re.compile(u'７'), u'7'],
+		[re.compile(u'８'), u'8'],
+		[re.compile(u'９'), u'9'],
+		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
+		[re.compile(u'(\\d+)．(\\d+)'), u'\\1.\\2'],
+		[re.compile(u'(\\d+)（(\\d+)'), '\\1(\\2'],
+		[re.compile(u'(\\d+)）(\\d+)'), '\\1)\\2'],
+		[re.compile(u'(\\d+)\\((\\d+)\\)(\\d+)'), u'\\1-\\2-\\3'],
+
+		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０\\1 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6 ０\\7ノ  ０\\8 ０\\9 ０\\10 ０\\11 '],
+		
+		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０\\1 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
+		
+		[re.compile(u'(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
+		
+		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０\\1 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
+		
+		[re.compile(u'(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０\\1 ０\\2 ０\\3 ０\\4ノ  ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
+		
+		[re.compile(u'0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
+			u'  ０0 ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5ノ  ０\\6 ０\\7 ０\\8 ０\\9 '],
+		
+		#[re.compile(u'(\\D)(\\d)(\\d)(\\d)(\\d)(\\D)'), 
+		#	u'\\1  ０\\2 ０\\3 ０\\4 ０\\5 \\6'],
+	
+		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンレイレイレイレイレイ\\2 '],
+		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンレイレイレイレイ\\2 '],
+		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンレイレイレイ\\2 '],
+		[re.compile(u'(\\d+)\\.00(\\d+)'), u' \\1テンレイレイ\\2 '],
+		[re.compile(u'(\\d+)\\.0(\\d+)'), u' \\1テンレイ\\2 '],
+		[re.compile(u'(\\d+)\\.(\\d+)'), u' \\1テン\\2 '],
+
+		[re.compile(u' ０0'), u'ゼロ'],
+		[re.compile(u' ０1'), u'イチ'],
+		[re.compile(u' ０2'), u'ニイ'],
+		[re.compile(u' ０3'), u'サン'],
+		[re.compile(u' ０4'), u'ヨン'],
+		[re.compile(u' ０5'), u'ゴオ'],
+		[re.compile(u' ０6'), u'ロク'],
+		[re.compile(u' ０7'), u'ナナ'],
+		[re.compile(u' ０8'), u'ハチ'],
+		[re.compile(u' ０9'), u'キュウ'],
+
+		[re.compile(u'(（|\()月(）|\))'), u' カッコゲツヨー '],
+		[re.compile(u'(（|\()火(）|\))'), u' カッコカヨー '],
+		[re.compile(u'(（|\()水(）|\))'), u' カッコスイヨー '],
+		[re.compile(u'(（|\()木(）|\))'), u' カッコモクヨー '],
+		[re.compile(u'(（|\()金(）|\))'), u' カッコキンヨー '],
+		[re.compile(u'(（|\()土(）|\))'), u' カッコドヨー '],
+		[re.compile(u'(（|\()日(）|\))'), u' カッコニチヨー '],
+
+		[re.compile(u'(\\d+)\\:00\\:00'), u'\\1ジレーフンレービョウ'],
+		[re.compile(u'(\\d+)\\:(\\d+)\\:00'), u'\\1ジ\\2フンレービョウ'],
+		[re.compile(u'(\\d+)\\:00\\:(\\d+)'), u'\\1ジレイフン\\2ビョウ'],
+		[re.compile(u'(\\d+)\\:00'), u'\\1ジレイフン'],
+		[re.compile(u'(\\d+)\\:(\\d+)\\:(\\d+)'), u'\\1ジ\\2フン\\3ビョウ'],
+		
+		[re.compile(u'19\\:(\\d+)'), u'ジュークジ\\1フン'],
+		[re.compile(u'9\\:(\\d+)分'), u'クジ\\1フン'],
+		[re.compile(u'9\\:(\\d+)'), u'クジ\\1フン'],
+		[re.compile(u'(\\d+)\\:(\\d+)'), u'\\1ジ\\2フン'],
+		
+		[re.compile(u'(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'(\\d+)\\/(\\d+)\\/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'(\\d{1,2})\\/(\\d{1,2})'), u'\\1ガツ\\2ニチ'],
+		[re.compile(u'(\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+
+		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
+
+		[re.compile('NVDA'), u'エヌブイディーエー'],
+		[re.compile(u'ＮＶＤＡ'), u'エヌブイディーエー'],
+		
+		# zenkaku
+		[re.compile(u'。'), ' '],
+		[re.compile(u'、'), ' '],
+		[re.compile(u'…'), ' '],
+		[re.compile(u'・'), u' '],
+		[re.compile(u'’'), ''],
+		[re.compile(u'（'), ' '],
+		[re.compile(u'）'), ' '],
 		[re.compile(u'≫'), ' '],
 		[re.compile(u'「'), ' '],
 		[re.compile(u'」'), ' '],
 		[re.compile(u'【'), ' '],
 		[re.compile(u'】'), ' '],
-		[re.compile(u'’'), ''],
-		[re.compile(u'＜'), ' '],
-		[re.compile(u'＞'), ' '],
-		[re.compile(u'を'), u'を '],
-		[re.compile(u'（'), ' '],
-		[re.compile(u'）'), ' '],
+		[re.compile(u'●'), ' '],
+		[re.compile(u'◎'), ' '],
+		[re.compile(u'◆'), ' '],
+		
+		# hankaku
+		[re.compile(u'>'), ' '],
+		[re.compile(u'<'), ' '],
+		[re.compile(u'='), ' = '],
 
+		#[re.compile(u'\u2014'), ' '],
+		#[re.compile(u'\u2022'), ' '],
+
+		# trim space
 		[re.compile(u'マイ '), u'マイ'],
 		[re.compile(u'コントロール パネル'), u'コントロールパネル'],
 		[re.compile(u'タスク バー'), u'タスクバー'],
-		
 		[re.compile(u'の '), u'の'], # remove space "1の 7" -> "1の7"
-		[re.compile(u'読み込み中'), u'ヨミコミチュー'],
-		[re.compile(u'一行'), u'イチギョー'],
-		[re.compile(u'1行'), u'イチギョー'],
-		[re.compile(u'2行'), u'ニギョー'],
-		[re.compile(u'3行'), u'サンギョー'],
-		[re.compile(u'空行'), u'クーギョー'],
-		[re.compile(u'行末'), u'ギョーマツ'],
-		[re.compile(u'複数行'), u'フクスーギョー'],
+		[re.compile(u' 側'), u' ガワ'],
+		
 		[re.compile(u'→'), u'ミギヤジルシ'],
 		[re.compile(u'←'), u'ヒダリヤジルシ'],
 		[re.compile(u'↑'), u'ウエヤジルシ'],
 		[re.compile(u'↓'), u'シタヤジルシ'],
 		[re.compile('\.\.\.'), u' テンテンテン '],
-		[re.compile(u'孫正義'), u'ソンマサヨシ'],
-		[re.compile(u'池田信夫'), u'イケダノブオ'],
-		[re.compile(u'既読'), u'キドク'],
-		[re.compile(u'新家'), u'シンケ'],
-		[re.compile(u'障がい'), u'ショーガイ'],
-		[re.compile(u'聾'), u'ロー'],
-		[re.compile(u'盲'), u'モー'],
-		[re.compile(u' 側'), u' ガワ'],
-		[re.compile(u'元に'), u'モトニ'],
-		[re.compile(u'明朝'), u'ミンチョー'],
-		[re.compile(u'昔々'), u'ムカシムカシ'],
-		[re.compile(u' 側'), u' ガワ'],
-		[re.compile(u'(Opensource|opensource|OPENSOURCE)'), u'オープンソース'],
-		[re.compile(u'(Notepad|notepad|NOTEPAD)'), u'ノートパッド'],
-		[re.compile(u'(Guidebook|guidebook|GUIDEBOOK)'), u'ガイドブック'],
-		[re.compile(u'(Blog|blog|BLOG)'), u'ブログ'],
-		[re.compile(u'(Matlab|matlab|MATLAB)'), u'マトラブ'],
-		[re.compile(u'(Keyboard|keyboard|KEYBOARD)'), u'キーボード'],
-		[re.compile(u'(Plugins|plugins|PLUGINS)'), u'プラグインズ'],
-		[re.compile(u'(Facebook|facebook|FACEBOOK)'), u'フェイスブック'],
-		[re.compile(u'(Desktop|desktop|DESKTOP)'), u'デスクトップ'],
-		[re.compile(u'(Output|output|OUTPUT)'), u'アウトプット'],
-		[re.compile(u'(Nullsoft|nullsoft|NULLSOFT)'), u'ヌルソフト'],
-		[re.compile(u'(Cygdrive|cygdrive|CYGDRIVE)'), u'シグドライブ'],
-		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
-		[re.compile(u'(\\d+)\:(\\d+)'), u'\\1ジ\\2フン'],
-		[re.compile(u'(\\d+)\/(\\d+)/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
-		[re.compile(u'(\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d\\d)\,(\\d\\d\\d)'), u'\\1\\2'],
 
-		[re.compile('\-'), ' '],
-		[re.compile('\:'), 'コロン'],
-		[re.compile('\/'), ' '],
+		[re.compile(u'という方'), u'というカタ'],
+		[re.compile(u'と言う方'), u'というカタ'],
+		[re.compile(u'方は'), u'カタは'],
+		[re.compile(u'方が'), u'カタが'],
+		[re.compile(u'方の'), u'カタの'],
+		[re.compile(u'方も'), u'カタも'],
+		[re.compile(u'の方'), u'のカタ'],
+		[re.compile(u'な方'), u'なカタ'],
+		
+		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
-		[re.compile('\+'), u'プラス'],
-		[re.compile('\.'), u'ドット'],
-		[re.compile('\_'), u'アンダースコア'],
-		[re.compile('\='), u'イコール'],
-		[re.compile('\;'), u'セミコロン'],
-		[re.compile('\['), u' ダイカッコ '],
-		[re.compile('\]'), u' '],
-		[re.compile('\('), u' カッコ '],
-		[re.compile('\)'), u' '],
-		[re.compile('\|'), u'タテセン'],
-		[re.compile('\#'), u'シャープ'],
-		[re.compile('\"'), u'コーテーション'],
-		[re.compile('\<'), u'ショーナリ'],
-		[re.compile('\>'), u'ダイナリ'],
-		[re.compile('\''), ' '],
+		[re.compile('\\:'), u' コロン '],
+		[re.compile('\\+'), u'プラス'],
+		[re.compile('\\.'), u'ドット'],
+		[re.compile('\\_'), u' アンダースコア '],
+		[re.compile('\\='), u'イコール'],
+		[re.compile('\\;'), u'セミコロン'],
+		[re.compile('\\['), u' ダイカッコ '],
+		[re.compile('\\]'), u' '],
+		[re.compile('\\('), u' カッコ '],
+		[re.compile('\\)'), u' '],
+		[re.compile('\\|'), u'タテセン'],
+		[re.compile('\\#'), u' シャープ '],
+		[re.compile('\\"'), u'コーテーション'],
+		[re.compile('\\<'), u'ショーナリ'],
+		[re.compile('\\>'), u'ダイナリ'],
+		[re.compile('\\\''), ' '],
+		
+		[re.compile(u'～'), u'から'],
+		[re.compile(u'\~'), u'から'],
 	]
 
 def predic_load():
@@ -225,20 +291,25 @@ def _speak(msg, index=None, isCharacter=False):
 	isSpeaking = True
 	for p in predic:
 		try:
-			msg = p[0].sub(p[1], msg)
+			msg = re.sub(p[0], p[1], msg) #msg = p[0].sub(p[1], msg)
 		except:
 			pass
 	msg = msg.lower()
 	for m in string.split(msg, ' '):
-		text = m.encode(CODE)
-		libjt_text2mecab(libjt, buff, text); str = buff.value #str = text2mecab(text.decode(CODE)).encode(CODE) # 
-		if not isSpeaking: jtalk_refresh(); return
-		if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE)))
-		[feature, size] = Mecab_analysis(str) # [feature, size] = Mecab_analysis_utf16(str, CODE_VOICE)
-		if not isSpeaking: jtalk_refresh(); return
-		if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
-		libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod, player.feed, is_speaking_func, 128) # player.feed() is called inside
-		jtalk_refresh()
+		m = m.rstrip('\r\n')
+		if len(m) > 0:
+			try:
+				text = m.encode(CODE, 'ignore')
+				libjt_text2mecab(libjt, buff, text); str = buff.value
+				if not isSpeaking: jtalk_refresh(); return
+				if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE, 'ignore')))
+				[feature, size] = Mecab_analysis(str)
+				if not isSpeaking: jtalk_refresh(); return
+				if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
+				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod, player.feed, is_speaking_func, 128) # player.feed() is called inside
+				jtalk_refresh()
+			except:
+				pass
 	global lastIndex
 	lastIndex = currIndex
 	currIndex = None
