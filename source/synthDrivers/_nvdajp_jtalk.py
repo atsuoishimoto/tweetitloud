@@ -30,6 +30,11 @@ voice_args = _jtalk_voice_m001
 # if samp_rate==16000: normal speed = 80samples period
 fperiod = 80
 
+# gain control
+max_level = 32767
+thres_level = 64
+thres2_level = 16
+
 DEBUG_INFO = None # 1
 
 # for mecab dic
@@ -67,6 +72,7 @@ def predic_build():
 	predic = [
 		[re.compile(u'\ufffd'), u' '],
  		[re.compile(u'(\\?)々'), u'\\1\\1'],
+		[re.compile('Welcome to'), u'ウェルカムトゥー'],
 
 		## zenkaku to hankaku convert
 		[re.compile(u'　'), ' '],
@@ -118,9 +124,10 @@ def predic_build():
 		[re.compile(u'0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０0 ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5ノ  ０\\6 ０\\7 ０\\8 ０\\9 '],
 		
-		#[re.compile(u'(\\D)(\\d)(\\d)(\\d)(\\d)(\\D)'), 
-		#	u'\\1  ０\\2 ０\\3 ０\\4 ０\\5 \\6'],
-	
+		[re.compile(u'0(\\d)(\\d)(\\d)'), u'  ０0 ０\\1 ０\\2 ０\\3 '],
+		[re.compile(u'0(\\d)(\\d)'), u'  ０0 ０\\1 ０\\2 '],
+		[re.compile(u'0(\\d)'), u'  ０0 ０\\1 '],
+
 		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンレイレイレイレイレイ\\2 '],
 		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンレイレイレイレイ\\2 '],
 		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンレイレイレイ\\2 '],
@@ -167,8 +174,8 @@ def predic_build():
 
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
 
-		[re.compile('NVDA'), u'エヌブイディーエー'],
-		[re.compile(u'ＮＶＤＡ'), u'エヌブイディーエー'],
+		#[re.compile('NVDA'), u'エヌブイディーエー'],
+		#[re.compile(u'ＮＶＤＡ'), u'エヌブイディーエー'],
 		
 		# zenkaku
 		[re.compile(u'。'), ' '],
@@ -208,14 +215,14 @@ def predic_build():
 		[re.compile(u'↓'), u'シタヤジルシ'],
 		[re.compile('\.\.\.'), u' テンテンテン '],
 
-		[re.compile(u'という方'), u'というカタ'],
-		[re.compile(u'と言う方'), u'というカタ'],
-		[re.compile(u'方は'), u'カタは'],
-		[re.compile(u'方が'), u'カタが'],
-		[re.compile(u'方の'), u'カタの'],
-		[re.compile(u'方も'), u'カタも'],
-		[re.compile(u'の方'), u'のカタ'],
-		[re.compile(u'な方'), u'なカタ'],
+		#[re.compile(u'という方'), u'というカタ'],
+		#[re.compile(u'と言う方'), u'というカタ'],
+		#[re.compile(u'方は'), u'カタは'],
+		#[re.compile(u'方が'), u'カタが'],
+		#[re.compile(u'方の'), u'カタの'],
+		#[re.compile(u'方も'), u'カタも'],
+		#[re.compile(u'の方'), u'のカタ'],
+		#[re.compile(u'な方'), u'なカタ'],
 		
 		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
@@ -295,21 +302,32 @@ def _speak(msg, index=None, isCharacter=False):
 		except:
 			pass
 	msg = msg.lower()
-	for m in string.split(msg, ' '):
-		m = m.rstrip('\r\n')
+	#for m in string.split(msg, ' '):
+	if DEBUG_INFO: logwrite("_speak(%s)" % msg)
+	for m in string.split(msg):
+		#m = m.rstrip('\r\n')
 		if len(m) > 0:
 			try:
 				text = m.encode(CODE, 'ignore')
 				libjt_text2mecab(libjt, buff, text); str = buff.value
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: logwrite("_speak(%s) text2mecab(%s)" % (msg, str.decode(CODE, 'ignore')))
+				if DEBUG_INFO: logwrite("text2mecab(%s)" % str.decode(CODE, 'ignore'))
 				[feature, size] = Mecab_analysis(str)
+				if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
 				if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
-				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod, player.feed, is_speaking_func, 128) # player.feed() is called inside
+				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, 
+					fperiod_ = fperiod, 
+					feed_func_ = player.feed, # player.feed() is called inside
+					is_speaking_func_ = is_speaking_func, 
+					thres_ = thres_level,
+					thres2_ = thres2_level,
+					level_ = max_level)
+				if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
-			except:
-				pass
+				if DEBUG_INFO: logwrite("jtalk_refresh done.")
+			except (Exception, e):
+				if DEBUG_INFO: logwrite(e)
 	global lastIndex
 	lastIndex = currIndex
 	currIndex = None
@@ -387,3 +405,16 @@ def set_rate(rate):
 		fperiod = int(80 - int(rate) / 2) # 80..30
 	if voice_args['samp_rate'] == 48000:
 		fperiod = int(240 - 1.5 * rate) # 240..90
+
+def get_rate():
+	if voice_args['samp_rate'] == 16000:
+		return 160 - 2 * fperiod
+	if voice_args['samp_rate'] == 48000:
+		return int((240 - fperiod) / 1.5)
+	return 0
+
+def set_volume(vol):
+	global max_level, thres_level
+	max_level = int(326.67 * vol + 100) # 100..32767
+	thres_level = 64
+	thres2_level = 16

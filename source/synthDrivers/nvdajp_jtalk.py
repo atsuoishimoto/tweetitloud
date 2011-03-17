@@ -29,6 +29,7 @@ class SynthDriver(SynthDriver):
 	def __init__(self):
 		_nvdajp_jtalk.initialize()
 		self.voice_id = 'V1'
+		self._volume = 100
 
 	def speakText(self,text,index=None):
 		_nvdajp_jtalk.speak(text, index=index)
@@ -59,9 +60,11 @@ class SynthDriver(SynthDriver):
 		return
 
 	def _get_volume(self):
-		return 100
+		return self._volume
 
-	def _set_volume(self,volume):
+	def _set_volume(self,volume_):
+		self._volume = int(volume_)
+		_nvdajp_jtalk.set_volume(self._volume)
 		return
 
 	def _get_inflection(self):
@@ -91,6 +94,7 @@ class SynthDriver(SynthDriver):
 				_nvdajp_jtalk.terminate()
 				_nvdajp_jtalk.initialize(v)
 				_nvdajp_jtalk.set_rate(rate)
+				_nvdajp_jtalk.set_volume(self._volume)
 				return
 		return
 
