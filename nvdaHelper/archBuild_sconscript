@@ -80,3 +80,17 @@ env.Install(libInstallDir,geckoVBufBackend)
 
 mshtmlVBufBackend=env.SConscript('vbufBackends/mshtml/sconscript')
 env.Install(libInstallDir,mshtmlVBufBackend)
+
+#nvdajpime=env.SConscript('nvdajpime_sconscript')		# Masataka.Shinke
+#Export('nvdajpime')									# Masataka Shinke
+#env.Install(libInstallDir,nvdajpime)					# Masataka.Shinke
+
+nvdajpime=env.SConscript('nvdajpime/sconscript')		# Masataka Shinke
+Export('nvdajpime')										# Masataka Shinke
+env.Install(clientInstallDir,nvdajpime)					# Masataka Shinke
+env.Install(libInstallDir,nvdajpime)					# Masataka.Shinke
+
+nvdajpimeRPC=env.SConscript('nvdajpimeRPC/sconscript')	# Masataka Shinke
+Export('nvdajpimeRPC')									# Masataka Shinke
+env.Install(clientInstallDir,nvdajpimeRPC)				# Masataka Shinke
+env.Install(libInstallDir,nvdajpimeRPC)					# Masataka.Shinke
