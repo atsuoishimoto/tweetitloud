@@ -73,6 +73,7 @@ def predic_build():
 		[re.compile(u'\ufffd'), u' '],
  		[re.compile(u'(\\?)々'), u'\\1\\1'],
 		[re.compile('Welcome to'), u'ウェルカムトゥー'],
+		[re.compile('mei'), u'メイ'],
 
 		## zenkaku to hankaku convert
 		[re.compile(u'　'), ' '],
@@ -89,7 +90,7 @@ def predic_build():
 		[re.compile(u'＜'), '>'],
 		[re.compile(u'＞'), '<'],
 
-		# normalize phone number
+		## normalize phone number
 		[re.compile(u'０'), u'0'],
 		[re.compile(u'１'), u'1'],
 		[re.compile(u'２'), u'2'],
@@ -124,9 +125,9 @@ def predic_build():
 		[re.compile(u'0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０0 ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5ノ  ０\\6 ０\\7 ０\\8 ０\\9 '],
 		
-		[re.compile(u'0(\\d)(\\d)(\\d)'), u'  ０0 ０\\1 ０\\2 ０\\3 '],
-		[re.compile(u'0(\\d)(\\d)'), u'  ０0 ０\\1 ０\\2 '],
-		[re.compile(u'0(\\d)'), u'  ０0 ０\\1 '],
+		[re.compile(u'(\\D)0(\\d)(\\d)(\\d)'), u'\\1  ０0 ０\\2 ０\\3 ０\\4 '],
+		[re.compile(u'(\\D)0(\\d)(\\d)'), u'\\1  ０0 ０\\2 ０\\3 '],
+		[re.compile(u'(\\D)0(\\d)'), u'\\1  ０0 ０\\2 '],
 
 		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンレイレイレイレイレイ\\2 '],
 		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンレイレイレイレイ\\2 '],
@@ -174,10 +175,7 @@ def predic_build():
 
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
 
-		#[re.compile('NVDA'), u'エヌブイディーエー'],
-		#[re.compile(u'ＮＶＤＡ'), u'エヌブイディーエー'],
-		
-		# zenkaku
+		## zenkaku
 		[re.compile(u'。'), ' '],
 		[re.compile(u'、'), ' '],
 		[re.compile(u'…'), ' '],
@@ -194,13 +192,10 @@ def predic_build():
 		[re.compile(u'◎'), ' '],
 		[re.compile(u'◆'), ' '],
 		
-		# hankaku
+		## hankaku
 		[re.compile(u'>'), ' '],
 		[re.compile(u'<'), ' '],
 		[re.compile(u'='), ' = '],
-
-		#[re.compile(u'\u2014'), ' '],
-		#[re.compile(u'\u2022'), ' '],
 
 		# trim space
 		[re.compile(u'マイ '), u'マイ'],
@@ -215,15 +210,6 @@ def predic_build():
 		[re.compile(u'↓'), u'シタヤジルシ'],
 		[re.compile('\.\.\.'), u' テンテンテン '],
 
-		#[re.compile(u'という方'), u'というカタ'],
-		#[re.compile(u'と言う方'), u'というカタ'],
-		#[re.compile(u'方は'), u'カタは'],
-		#[re.compile(u'方が'), u'カタが'],
-		#[re.compile(u'方の'), u'カタの'],
-		#[re.compile(u'方も'), u'カタも'],
-		#[re.compile(u'の方'), u'のカタ'],
-		#[re.compile(u'な方'), u'なカタ'],
-		
 		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
 		[re.compile('\\:'), u' コロン '],
@@ -308,10 +294,11 @@ def _speak(msg, index=None, isCharacter=False):
 		#m = m.rstrip('\r\n')
 		if len(m) > 0:
 			try:
+				if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
 				text = m.encode(CODE, 'ignore')
 				libjt_text2mecab(libjt, buff, text); str = buff.value
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: logwrite("text2mecab(%s)" % str.decode(CODE, 'ignore'))
+				if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
 				[feature, size] = Mecab_analysis(str)
 				if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
