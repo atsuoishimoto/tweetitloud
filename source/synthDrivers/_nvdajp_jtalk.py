@@ -301,6 +301,10 @@ def _speak(msg, index=None, isCharacter=False):
 				if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
 				if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
+				if DEBUG_INFO:
+					lw = logwrite
+				else:
+					lw = None
 				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, 
 					fperiod_ = fperiod, 
 					feed_func_ = player.feed, # player.feed() is called inside
@@ -308,7 +312,7 @@ def _speak(msg, index=None, isCharacter=False):
 					thres_ = thres_level,
 					thres2_ = thres2_level,
 					level_ = max_level,
-					logwrite_ = logwrite)
+					logwrite_ = lw)
 				if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
 				if DEBUG_INFO: logwrite("jtalk_refresh done.")
