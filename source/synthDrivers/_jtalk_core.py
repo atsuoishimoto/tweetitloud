@@ -514,7 +514,10 @@ def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, fe
 	if logwrite_ != None: logwrite_('libjt_synthesis 1d')
 	# exception: access violation reading 0x00000000
 	# https://github.com/nishimotz/libopenjtalk/commit/10d3abda6835e0547846fb5e12a36c1425561aaa#diff-66
-	libjt.njd_set_accent_type(njd)
+	try:
+		libjt.njd_set_accent_type(njd)
+	except:
+		if logwrite_ != None: logwrite_('libjt_synthesis njd_set_accent_type() error ' + e)
 	if logwrite_ != None: logwrite_('libjt_synthesis 1e')
 	libjt.njd_set_unvoiced_vowel(njd)
 	if logwrite_ != None: logwrite_('libjt_synthesis 1f')
