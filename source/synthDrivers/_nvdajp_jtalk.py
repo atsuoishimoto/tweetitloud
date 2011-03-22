@@ -32,8 +32,8 @@ fperiod = 80
 
 # gain control
 max_level = 32767
-thres_level = 64
-thres2_level = 16
+thres_level = 128
+thres2_level = 128
 
 DEBUG_INFO = None # 1 
 
@@ -90,6 +90,60 @@ def predic_build():
 		[re.compile(u'＜'), '>'],
 		[re.compile(u'＞'), '<'],
 
+		[re.compile(u'Ａ'), u'A'],
+		[re.compile(u'Ｂ'), u'B'],
+		[re.compile(u'Ｃ'), u'C'],
+		[re.compile(u'Ｄ'), u'D'],
+		[re.compile(u'Ｅ'), u'E'],
+		[re.compile(u'Ｆ'), u'F'],
+		[re.compile(u'Ｇ'), u'G'],
+		[re.compile(u'Ｈ'), u'H'],
+		[re.compile(u'Ｉ'), u'I'],
+		[re.compile(u'Ｊ'), u'J'],
+		[re.compile(u'Ｋ'), u'K'],
+		[re.compile(u'Ｌ'), u'L'],
+		[re.compile(u'Ｍ'), u'M'],
+		[re.compile(u'Ｎ'), u'N'],
+		[re.compile(u'Ｏ'), u'O'],
+		[re.compile(u'Ｐ'), u'P'],
+		[re.compile(u'Ｑ'), u'Q'],
+		[re.compile(u'Ｒ'), u'R'],
+		[re.compile(u'Ｓ'), u'S'],
+		[re.compile(u'Ｔ'), u'T'],
+		[re.compile(u'Ｕ'), u'U'],
+		[re.compile(u'Ｖ'), u'V'],
+		[re.compile(u'Ｗ'), u'W'],
+		[re.compile(u'Ｘ'), u'X'],
+		[re.compile(u'Ｙ'), u'Y'],
+		[re.compile(u'Ｚ'), u'Z'],
+		
+		[re.compile(u'ａ'), u'a'],
+		[re.compile(u'ｂ'), u'b'],
+		[re.compile(u'ｃ'), u'c'],
+		[re.compile(u'ｄ'), u'd'],
+		[re.compile(u'ｅ'), u'e'],
+		[re.compile(u'ｆ'), u'f'],
+		[re.compile(u'ｇ'), u'g'],
+		[re.compile(u'ｈ'), u'h'],
+		[re.compile(u'ｉ'), u'i'],
+		[re.compile(u'ｊ'), u'j'],
+		[re.compile(u'ｋ'), u'k'],
+		[re.compile(u'ｌ'), u'l'],
+		[re.compile(u'ｍ'), u'm'],
+		[re.compile(u'ｎ'), u'n'],
+		[re.compile(u'ｏ'), u'o'],
+		[re.compile(u'ｐ'), u'p'],
+		[re.compile(u'ｑ'), u'q'],
+		[re.compile(u'ｒ'), u'r'],
+		[re.compile(u'ｓ'), u's'],
+		[re.compile(u'ｔ'), u't'],
+		[re.compile(u'ｕ'), u'u'],
+		[re.compile(u'ｖ'), u'v'],
+		[re.compile(u'ｗ'), u'w'],
+		[re.compile(u'ｘ'), u'x'],
+		[re.compile(u'ｙ'), u'y'],
+		[re.compile(u'ｚ'), u'z'],
+		
 		## normalize phone number
 		[re.compile(u'０'), u'0'],
 		[re.compile(u'１'), u'1'],
@@ -195,7 +249,7 @@ def predic_build():
 		## hankaku
 		[re.compile(u'>'), ' '],
 		[re.compile(u'<'), ' '],
-		[re.compile(u'='), ' = '],
+		[re.compile(u'='), '='],
 
 		# trim space
 		[re.compile(u'マイ '), u'マイ'],
@@ -212,18 +266,18 @@ def predic_build():
 
 		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
-		[re.compile('\\:'), u' コロン '],
+		[re.compile('\\:'), u'コロン'],
 		[re.compile('\\+'), u'プラス'],
 		[re.compile('\\.'), u'ドット'],
-		[re.compile('\\_'), u' アンダースコア '],
+		[re.compile('\\_'), u'アンダースコア'],
 		[re.compile('\\='), u'イコール'],
 		[re.compile('\\;'), u'セミコロン'],
-		[re.compile('\\['), u' ダイカッコ '],
+		[re.compile('\\['), u'ダイカッコ'],
 		[re.compile('\\]'), u' '],
-		[re.compile('\\('), u' カッコ '],
+		[re.compile('\\('), u'カッコ'],
 		[re.compile('\\)'), u' '],
 		[re.compile('\\|'), u'タテセン'],
-		[re.compile('\\#'), u' シャープ '],
+		[re.compile('\\#'), u'シャープ'],
 		[re.compile('\\"'), u'コーテーション'],
 		[re.compile('\\<'), u'ショーナリ'],
 		[re.compile('\\>'), u'ダイナリ'],
@@ -406,5 +460,5 @@ def get_rate():
 def set_volume(vol):
 	global max_level, thres_level
 	max_level = int(326.67 * vol + 100) # 100..32767
-	thres_level = 64
-	thres2_level = 16
+	thres_level = 128
+	thres2_level = 128
