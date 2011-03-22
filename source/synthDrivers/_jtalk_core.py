@@ -500,34 +500,53 @@ def trim_silence(buf, byte_count, thres=64):
 	# if DEBUG_INFO: logwrite("trim_silence (%d:%d)/%d" % (begin_pos, end_pos, byte_count))
 	return buf[begin_pos:end_pos]
 
-def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, feed_func_=None, is_speaking_func_=None, thres_=32, thres2_=32, level_=32767):
+def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, feed_func_=None, is_speaking_func_=None, thres_=32, thres2_=32, level_=32767, logwrite_=None):
 	if feature == None or size == None: return None
+	if logwrite_ != None: logwrite_('libjt_synthesis 1')
 	libjt.HTS_Engine_set_fperiod(engine, fperiod_) # 80(point=5ms) frame period
 	libjt.mecab2njd(njd, feature, size)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1a')
 	libjt.njd_set_pronunciation(njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1b')
 	libjt.njd_set_digit(njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1c')
 	libjt.njd_set_accent_phrase(njd)
-	libjt.njd_set_accent_type(njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1d')
+	# exception: access violation reading 0x00000000
+	# https://github.com/nishimotz/libopenjtalk/commit/10d3abda6835e0547846fb5e12a36c1425561aaa#diff-66
+	try:
+		libjt.njd_set_accent_type(njd)
+	except:
+		if logwrite_ != None: logwrite_('libjt_synthesis njd_set_accent_type() error ' + e)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1e')
 	libjt.njd_set_unvoiced_vowel(njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1f')
 	libjt.njd_set_long_vowel(njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1g')
 	libjt.njd2jpcommon(jpcommon, njd)
+	if logwrite_ != None: logwrite_('libjt_synthesis 1h')
 	libjt.JPCommon_make_label(jpcommon)
+	if logwrite_ != None: logwrite_('libjt_synthesis 2')
 	if is_speaking_func_ and not is_speaking_func_() :
 		libjt_refresh(libjt, engine, jpcommon, njd)
 		Mecab_refresh()
 		return None
 	s = libjt.JPCommon_get_label_size(jpcommon)
+	if logwrite_ != None: logwrite_('libjt_synthesis 3')
 	buf = None
 	if s > 2:
+		if logwrite_ != None: logwrite_('libjt_synthesis 4')
 		f = libjt.JPCommon_get_label_feature(jpcommon)
 		libjt.HTS_Engine_load_label_from_string_list(engine, f, s)
 		libjt.HTS_Engine_create_sstream(engine)
 		libjt.HTS_Engine_create_pstream(engine)
 		libjt.HTS_Engine_create_gstream(engine)
+		if logwrite_ != None: logwrite_('libjt_synthesis 5')
 		if is_speaking_func_ and not is_speaking_func_() :
 			libjt_refresh(libjt, engine, jpcommon, njd)
 			Mecab_refresh()
 			return None
+		if logwrite_ != None: logwrite_('libjt_synthesis 6')
 		libjt.jt_speech_normalize(engine, level_)
 		#total_nsample = libjt.jt_total_nsample(engine)
 		total_nsample = libjt.jt_trim_silence(engine, thres_, thres2_)
@@ -535,9 +554,11 @@ def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, fe
 		byte_count = total_nsample * sizeof(c_short)
 		buf = string_at(speech_ptr, byte_count)
 		#buf = trim_silence(buf, byte_count, thres_)
+		if logwrite_ != None: logwrite_('libjt_synthesis 7')
 		if feed_func_: feed_func_(buf)
 		#libjt.jt_save_logs("_logfile", engine, njd)
 		#libjt.jt_save_riff("_out.wav", engine)
+		if logwrite_ != None: logwrite_('libjt_synthesis 8')
 	return buf
 
 def libjt_text2mecab(libjt, buff, txt):
