@@ -35,7 +35,7 @@ max_level = 32767
 thres_level = 64
 thres2_level = 16
 
-DEBUG_INFO = None # 1
+DEBUG_INFO = None # 1 
 
 # for mecab dic
 CODE = 'cp932' # shift_jis
@@ -260,7 +260,7 @@ class BgThread(threading.Thread):
 			try:
 				func(*args, **kwargs)
 			except:
-				pass # log.error("Error running function from queue", exc_info=True)
+				log.error("Error running function from queue", exc_info=True) # pass 
 			bgQueue.task_done()
 
 def _execWhenDone(func, *args, **kwargs):
@@ -288,10 +288,8 @@ def _speak(msg, index=None, isCharacter=False):
 		except:
 			pass
 	msg = msg.lower()
-	#for m in string.split(msg, ' '):
 	if DEBUG_INFO: logwrite("_speak(%s)" % msg)
 	for m in string.split(msg):
-		#m = m.rstrip('\r\n')
 		if len(m) > 0:
 			try:
 				if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
@@ -309,11 +307,12 @@ def _speak(msg, index=None, isCharacter=False):
 					is_speaking_func_ = is_speaking_func, 
 					thres_ = thres_level,
 					thres2_ = thres2_level,
-					level_ = max_level)
+					level_ = max_level,
+					logwrite_ = logwrite)
 				if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
 				if DEBUG_INFO: logwrite("jtalk_refresh done.")
-			except (Exception, e):
+			except Exception, e:
 				if DEBUG_INFO: logwrite(e)
 	global lastIndex
 	lastIndex = currIndex
