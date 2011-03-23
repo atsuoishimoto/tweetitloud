@@ -2487,6 +2487,11 @@ msgstr "オプション"
 msgid "Use CapsLock as an NVDA modifier key"
 msgstr "CapsLockキーをNVDAの制御キーとして使用"
 
+#: source\gui\__init__.py:416
+#: source\gui\settingsDialogs.py:469
+msgid "Use NonConvert as an NVDA modifier key"
+msgstr "無変換キーをNVDAの制御キーとして使用"
+
 #: gui\__init__.py:414
 msgid "Show this dialog when NVDA starts"
 msgstr "NVDA起動時にこのダイアログを表示する"
