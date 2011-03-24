@@ -89,6 +89,7 @@ def predic_build():
 		[re.compile(u'＝'), '='],
 		[re.compile(u'＜'), '>'],
 		[re.compile(u'＞'), '<'],
+		[re.compile(u'％'), '%'],
 
 		[re.compile(u'Ａ'), u'A'],
 		[re.compile(u'Ｂ'), u'B'],
@@ -282,6 +283,7 @@ def predic_build():
 		[re.compile('\\<'), u'ショーナリ'],
 		[re.compile('\\>'), u'ダイナリ'],
 		[re.compile('\\\''), ' '],
+		[re.compile('%'), u'パーセント'],
 		
 		[re.compile(u'～'), u'から'],
 		[re.compile(u'\~'), u'から'],
