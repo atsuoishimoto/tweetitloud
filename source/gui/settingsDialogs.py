@@ -919,6 +919,26 @@ class BrailleSettingsDialog(SettingsDialog):
 		sizer.Add(self.displayList)
 		settingsSizer.Add(sizer, border=10, flag=wx.BOTTOM)
 
+		# nvdajp start
+		# config.conf["braille"]["nvdajpComPort"] = 0, 1, ...
+		# COM0 = 0, COM1 = 1, ...
+		sizer = wx.BoxSizer(wx.HORIZONTAL)
+		label = wx.StaticText(self, wx.ID_ANY, label=_("COM &port:"))
+		comPorts = [
+			"COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", 
+			"COM8", "COM9", "COM10", "COM11", "COM12", "COM13", "COM14", "COM15", 
+			]
+		self.comportNames = comPorts
+		self.comportList = wx.Choice(self, wx.ID_ANY, choices=comPorts)
+		try:
+			self.comportList.SetSelection(config.conf["braille"]["nvdajpComPort"])
+		except:
+			self.comportList.SetSelection(0) 
+		sizer.Add(label)
+		sizer.Add(self.comportList)
+		settingsSizer.Add(sizer, border=10, flag=wx.BOTTOM)
+		# nvdajp end
+
 		sizer = wx.BoxSizer(wx.HORIZONTAL)
 		label = wx.StaticText(self, wx.ID_ANY, label=_("Translation &table:"))
 		self.tableNames = [table[0] for table in braille.TABLES]
@@ -978,6 +998,7 @@ class BrailleSettingsDialog(SettingsDialog):
 			return 
 		config.conf["braille"]["translationTable"] = self.tableNames[self.tableList.GetSelection()]
 		config.conf["braille"]["expandAtCursor"] = self.expandAtCursorCheckBox.GetValue()
+		config.conf["braille"]["nvdajpComPort"]	 = self.comportList.GetSelection() # nvdajp
 		try:
 			val = int(self.cursorBlinkRateEdit.GetValue())
 		except (ValueError, TypeError):
