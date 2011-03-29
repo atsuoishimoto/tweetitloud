@@ -636,7 +636,7 @@ def Ret2(Val):
             gaiji=False
             RetValues=RetValues+dic2.get(Values[pos])[2][0]
             while(dic2.has_key(Values[pos])):
-                print Values[pos],'@',
+                #print Values[pos],'@',
                 RetValues=RetValues+dic2.get(Values[pos])[2][1]
                 pos=pos+1
                 if(pos>=len(Values)):
@@ -648,7 +648,7 @@ def Ret2(Val):
                 RetValues=RetValues+dic3.get(Values[pos])[2][0]
             gaiji=True
             while(dic3.has_key(Values[pos])):
-                print Values[pos],'=',
+                #print Values[pos],'=',
                 RetValues=RetValues+dic3.get(Values[pos])[2][1]
                 pos=pos+1
                 if(pos>=len(Values)):
@@ -664,7 +664,7 @@ def Ret2(Val):
                 if(dic4.has_key(Values[pos+1])):
                     RetValues=RetValues+dic4.get(Values[pos])[2][1]
             while(dic4.has_key(Values[pos])):
-                print Values[pos],'#',
+                #print Values[pos],'#',
                 RetValues=RetValues+dic4.get(Values[pos])[2][2]
                 pos=pos+1
                 if(pos>=len(Values)):
@@ -673,19 +673,19 @@ def Ret2(Val):
         # ２バイト文字の処理
         elif(dic1.has_key(Values[pos:pos+2])&((pos+1)<len(Values) )):
             gaiji=False
-            print Values[pos:pos+2],'*',
+            #print Values[pos:pos+2],'*',
             RetValues=RetValues+dic1.get(Values[pos:pos+2])[2]
             pos=pos+2
         # １バイト文字の処理
         elif(dic1.has_key(Values[pos])):
             gaiji=False
-            print Values[pos],'+',
+            #print Values[pos],'+',
             RetValues=RetValues+dic1.get(Values[pos])[2]
             pos=pos+1
         # 例外処理
         else:
             gaiji=False
-            print ' ','-',
+            #print ' ','-',
             RetValues=RetValues+' '
             pos=pos+1
         
