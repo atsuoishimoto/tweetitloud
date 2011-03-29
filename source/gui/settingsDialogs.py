@@ -933,7 +933,7 @@ class BrailleSettingsDialog(SettingsDialog):
 		try:
 			self.comportList.SetSelection(config.conf["braille"]["nvdajpComPort"])
 		except:
-			self.comportList.SetSelection(0) # auto setting
+			self.comportList.SetSelection(0) 
 		sizer.Add(label)
 		sizer.Add(self.comportList)
 		settingsSizer.Add(sizer, border=10, flag=wx.BOTTOM)
