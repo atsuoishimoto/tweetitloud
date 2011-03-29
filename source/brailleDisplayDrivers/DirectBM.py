@@ -22,22 +22,18 @@ class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 
 	global Flag
 	Flag = False
-	global CFlag
-	CFlag= False
 	
 	@classmethod
 	def check(cls):
-		global CFlag
-		if(CFlag==False):
-			try:
-				DirectBM_drv.check()
-			except:
-				pass    
-		CFlag=True
 		return True		
 
 	def __init__(self):
 		global Flag
+		try:
+			DirectBM_drv.check()
+		except:
+			pass    
+
 		if(Flag==False):
 			try:
 				DirectBM_drv.f_init()       # 初期化
