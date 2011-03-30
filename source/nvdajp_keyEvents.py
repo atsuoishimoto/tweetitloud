@@ -5,6 +5,7 @@
 # Masataka.Shinke
 import time
 import nvdajp_dic			# Masataka Shinke
+import config				# NVDA
 import winUser				# NVDA
 import ui					# NVDA
 import queueHandler			# NVDA
@@ -26,7 +27,7 @@ def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):
 			winUser.VK_F9,
 			winUser.VK_F10):
 			for i in DiffValue:
-				if nvdajp_dic.dic1.has_key(i):
+				if nvdajp_dic.dic1.has_key(i) &  (config.conf["keyboard"]["nvdajp2Key"]==True) :
 					queueHandler.queueFunction(queueHandler.eventQueue,ui.message,nvdajp_dic.dic1.get(i)[2])
 				else:
 					queueHandler.queueFunction(queueHandler.eventQueue,ui.message,i)
@@ -34,8 +35,8 @@ def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):
 			queueHandler.queueFunction(queueHandler.eventQueue,ui.message, c_wchar_p(OldValue[-1]).value)
 		else:
 			queueHandler.queueFunction(queueHandler.eventQueue,ui.message,c_wchar_p(DiffValue).value)
-	#elif (LastKeyCode==winUser.VK_RETURN) & (c_wchar_p(OldValue).value!=""):
-	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,c_wchar_p(OldValue).value)
+	elif (LastKeyCode==winUser.VK_RETURN) & (c_wchar_p(OldValue).value!="") & (config.conf["keyboard"]["nvdajp1Key"]==True):
+			queueHandler.queueFunction(queueHandler.eventQueue,ui.message,c_wchar_p(OldValue).value)
 	## 2011-02-10 by nishimotz
 	# elif (LastKeyCode==242) & (ImeOpenStatus==0):
 	#	queueHandler.queueFunction(queueHandler.eventQueue,ui.message,u"にほんごＯＮ")
