@@ -146,7 +146,7 @@ def predic_build():
 		[re.compile(u'ｙ'), u'y'],
 		[re.compile(u'ｚ'), u'z'],
 		
-		## normalize phone number
+		## normalize number
 		[re.compile(u'０'), u'0'],
 		[re.compile(u'１'), u'1'],
 		[re.compile(u'２'), u'2'],
@@ -159,6 +159,12 @@ def predic_build():
 		[re.compile(u'９'), u'9'],
 		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
 		[re.compile(u'(\\d+)．(\\d+)'), u'\\1.\\2'],
+		
+		[re.compile(u'(\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		[re.compile(u'(\\d\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+
+		## normalize phone number
 		[re.compile(u'(\\d+)（(\\d+)'), '\\1(\\2'],
 		[re.compile(u'(\\d+)）(\\d+)'), '\\1)\\2'],
 		[re.compile(u'(\\d+)\\((\\d+)\\)(\\d+)'), u'\\1-\\2-\\3'],
@@ -185,6 +191,10 @@ def predic_build():
 		[re.compile(u'(\\D)0(\\d)(\\d)'), u'\\1  ０0 ０\\2 ０\\3 '],
 		[re.compile(u'(\\D)0(\\d)'), u'\\1  ０0 ０\\2 '],
 
+		[re.compile(u'\\b000'), u'ゼロゼロゼロ'],
+		[re.compile(u'\\b00'), u'ゼロゼロ'],
+		[re.compile(u'\\b0'), u'ゼロ'],
+		
 		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンレイレイレイレイレイ\\2 '],
 		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンレイレイレイレイ\\2 '],
 		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンレイレイレイ\\2 '],
@@ -225,9 +235,6 @@ def predic_build():
 		[re.compile(u'(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)'), u'\\1ネン\\2ガツ\\3ニチ'],
 		[re.compile(u'(\\d+)\\/(\\d+)\\/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
 		[re.compile(u'(\\d{1,2})\\/(\\d{1,2})'), u'\\1ガツ\\2ニチ'],
-		[re.compile(u'(\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
 
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
 
@@ -287,7 +294,6 @@ def predic_build():
 		[re.compile('%'), u'パーセント'],
 		[re.compile('\\*'), u'アステリスク'],
 		
-		#[re.compile(u'～'), u'から'],
 		[re.compile(u'\~'), u'から'],
 	]
 
