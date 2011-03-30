@@ -11,9 +11,10 @@ import binascii
 import DirectBM_dic         # Masataka.Shinke
 
 try:
-    import ui					# NVDA
-    import queueHandler			# NVDA
-    from logHandler import log	# NVDA
+	import ui					# NVDA
+	import config			# NVDA
+	import queueHandler			# NVDA
+	from logHandler import log	# NVDA
 except:
 	pass
 
@@ -102,17 +103,20 @@ def check():
 		py_bmStartDisplayMode2 = WINFUNC2(bmStartDisplayMode2)
 
 		text=u"BMシリーズ機器"
-		for i in range(0,7):
-			if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),i,3,py_bmStartInProcess,False)):
-				j=0
-				while RunFlag:
-					j+=1;
-					if(j>5):
-						break
-					time.sleep(1)
-				if(SFlag==True):
-					break
+		#for i in range(0,7):
+		#	if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),i,3,py_bmStartInProcess,False)):
+		#		j=0
+		#		while RunFlag:
+		#			j+=1;
+		#			if(j>5):
+		#				break
+		#			time.sleep(1)
+		#		if(SFlag==True):
+		#			break
 
+		if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),config.conf["braille"]["nvdajpComPort"]-1,3,py_bmStartInProcess,False)):
+			time.sleep(1)
+		
 		if(SFlag==True):
 			dll.bmStartDisplayMode2(gnDispMode,py_bmStartDisplayMode2)
 
