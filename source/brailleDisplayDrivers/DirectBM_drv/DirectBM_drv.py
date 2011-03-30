@@ -92,17 +92,19 @@ def check():
 	global RunFlag
 	RunFlag = True
 
-	if(SFlag==False):
-		dll.IsKbdcInstalled("SOFTWARE\\KGS\\KBDC110")
+	
+	
+	#if(SFlag==False):
+	#	dll.IsKbdcInstalled("SOFTWARE\\KGS\\KBDC110")
 		# ステータス取得コールバック
-		WINFUNC1 = WINFUNCTYPE(c_void_p,c_int, c_int)
-		py_bmStartInProcess = WINFUNC1(bmStartInProcess)
+	#	WINFUNC1 = WINFUNCTYPE(c_void_p,c_int, c_int)
+	#	py_bmStartInProcess = WINFUNC1(bmStartInProcess)
 
 		# ディスプレイモード
-		WINFUNC2 = WINFUNCTYPE(c_void_p,POINTER(c_uint32))
-		py_bmStartDisplayMode2 = WINFUNC2(bmStartDisplayMode2)
+	#	WINFUNC2 = WINFUNCTYPE(c_void_p,POINTER(c_uint32))
+	#	py_bmStartDisplayMode2 = WINFUNC2(bmStartDisplayMode2)
 
-		text=u"BMシリーズ機器"
+		#text=u"BMシリーズ機器"
 		#for i in range(0,7):
 		#	if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),i,3,py_bmStartInProcess,False)):
 		#		j=0
@@ -114,12 +116,41 @@ def check():
 		#		if(SFlag==True):
 		#			break
 
-		if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),config.conf["braille"]["nvdajpComPort"]-1,3,py_bmStartInProcess,False)):
-			time.sleep(1)
+	try:
+		dll.IsKbdcInstalled("SOFTWARE\\KGS\\KBDC110")
+		# ステータス取得コールバック
+		WINFUNC1 = WINFUNCTYPE(c_void_p,c_int, c_int)
+		py_bmStartInProcess = WINFUNC1(bmStartInProcess)
+
+		# ディスプレイモード
+		WINFUNC2 = WINFUNCTYPE(c_void_p,POINTER(c_uint32))
+		py_bmStartDisplayMode2 = WINFUNC2(bmStartDisplayMode2)
+
+	except:
+		pass
 		
+		
+	try:
+		dll.bmEndDisplayMode()
+	except:
+		pass
+		
+	try:
+		dll.bmEnd()
+	except:
+		pass
+		
+	text=u"BMシリーズ機器"	
+	if(dll.bmStartInProcess("nvdajp",text.encode('shift-jis'),config.conf["braille"]["nvdajpComPort"],3,py_bmStartInProcess,False)):
+		j=0
+		while RunFlag:
+			j+=1;
+			if(j>5):
+				break
+			time.sleep(1)
 		if(SFlag==True):
 			dll.bmStartDisplayMode2(gnDispMode,py_bmStartDisplayMode2)
-
+	
 	return SFlag
 
 

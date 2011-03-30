@@ -904,6 +904,13 @@ class DictionaryDialog(SettingsDialog):
 class BrailleSettingsDialog(SettingsDialog):
 	title = _("Braille Settings")
 
+	# nvdajp start
+	def comportList_event(self, event):
+		config.conf["braille"]["nvdajpComPort"]	 = self.comportList.GetSelection() # nvdajp
+		obj = self.comportList.GetStringSelection()
+		log.info("comportList_event:" + obj )		
+	# nvdajp end
+	
 	def makeSettings(self, settingsSizer):
 		sizer = wx.BoxSizer(wx.HORIZONTAL)
 		label = wx.StaticText(self, wx.ID_ANY, label=_("Braille &display:"))
@@ -921,12 +928,12 @@ class BrailleSettingsDialog(SettingsDialog):
 
 		# nvdajp start
 		# config.conf["braille"]["nvdajpComPort"] = 0, 1, ...
-		# COM0 = 0, COM1 = 1, ...
+		# COM1 = 0, COM2 = 1, ...
 		sizer = wx.BoxSizer(wx.HORIZONTAL)
 		label = wx.StaticText(self, wx.ID_ANY, label=_("COM &port:"))
 		comPorts = [
-			"COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", 
-			"COM8", "COM9", "COM10", "COM11", "COM12", "COM13", "COM14", "COM15", 
+			"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7",  "COM8",
+			"COM9", "COM10", "COM11", "COM12", "COM13", "COM14", "COM15", "COM16" 
 			]
 		self.comportNames = comPorts
 		self.comportList = wx.Choice(self, wx.ID_ANY, choices=comPorts)
@@ -937,6 +944,7 @@ class BrailleSettingsDialog(SettingsDialog):
 		sizer.Add(label)
 		sizer.Add(self.comportList)
 		settingsSizer.Add(sizer, border=10, flag=wx.BOTTOM)
+		self.comportList.Bind(wx.EVT_CHOICE,self.comportList_event)
 		# nvdajp end
 
 		sizer = wx.BoxSizer(wx.HORIZONTAL)
