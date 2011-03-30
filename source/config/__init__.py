@@ -119,6 +119,8 @@ outputDevice = string(default=default)
 	speakTypedWords = boolean(default=false)
 	beepForLowercaseWithCapslock = boolean(default=true)
 	speakCommandKeys = boolean(default=false)
+	nvdajp1Key = boolean(default=false) 	# nvdajp
+	nvdajp2Key = boolean(default=true) 	# nvdajp
 
 [virtualBuffers]
 	maxLineLength = integer(default=100)

@@ -2702,6 +2702,14 @@ msgstr "CapsLockがオンのとき、小文字が入力されたらビープ音�
 msgid "Speak command &keys"
 msgstr "コマンドキーの読み上げ(&K)"
 
+#: gui\settingsDialogs.py:491
+msgid "nvdajp1 key"
+msgstr "確定読み上げ"
+
+#: gui\settingsDialogs.py:494
+msgid "nvdajp2 key"
+msgstr "詳細読み上げ"
+
 #: gui\settingsDialogs.py:500
 msgid "Mouse settings"
 msgstr "マウス設定"

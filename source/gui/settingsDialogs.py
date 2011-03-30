@@ -487,6 +487,14 @@ class KeyboardSettingsDialog(SettingsDialog):
 		self.commandKeysCheckBox=wx.CheckBox(self,wx.NewId(),label=_("Speak command &keys"))
 		self.commandKeysCheckBox.SetValue(config.conf["keyboard"]["speakCommandKeys"])
 		settingsSizer.Add(self.commandKeysCheckBox,border=10,flag=wx.BOTTOM)
+		# nvdajp start
+		self.nvdajp1KeyCheckBox=wx.CheckBox(self,wx.NewId(),label=_("nvdajp1 key"))
+		self.nvdajp1KeyCheckBox.SetValue(config.conf["keyboard"]["nvdajp1Key"])
+		settingsSizer.Add(self.nvdajp1KeyCheckBox,border=10,flag=wx.BOTTOM)
+		self.nvdajp2KeyCheckBox=wx.CheckBox(self,wx.NewId(),label=_("nvdajp2 key"))
+		self.nvdajp2KeyCheckBox.SetValue(config.conf["keyboard"]["nvdajp2Key"])
+		settingsSizer.Add(self.nvdajp2KeyCheckBox,border=10,flag=wx.BOTTOM)
+		# nvdajp end
 
 	def postInit(self):
 		self.kbdList.SetFocus()
@@ -502,6 +510,10 @@ class KeyboardSettingsDialog(SettingsDialog):
 		config.conf["keyboard"]["speakTypedWords"]=self.wordsCheckBox.IsChecked()
 		config.conf["keyboard"]["beepForLowercaseWithCapslock"]=self.beepLowercaseCheckBox.IsChecked()
 		config.conf["keyboard"]["speakCommandKeys"]=self.commandKeysCheckBox.IsChecked()
+		# nvdajp start
+		config.conf["keyboard"]["nvdajp1Key"]=self.nvdajp1KeyCheckBox.IsChecked()
+		config.conf["keyboard"]["nvdajp2Key"]=self.nvdajp2KeyCheckBox.IsChecked()
+		# nvdajp end
 		super(KeyboardSettingsDialog, self).onOk(evt)
 
 class MouseSettingsDialog(SettingsDialog):
