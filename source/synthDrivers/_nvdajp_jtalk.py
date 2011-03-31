@@ -271,12 +271,13 @@ def predic_build():
 		[re.compile(u'←'), u'ヒダリヤジルシ'],
 		[re.compile(u'↑'), u'ウエヤジルシ'],
 		[re.compile(u'↓'), u'シタヤジルシ'],
-		[re.compile('\.\.\.'), u' テンテンテン '],
+		[re.compile('\.\.\.'), u'テンテンテン '],
 
 		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
 		[re.compile('\\:'), u'コロン'],
 		[re.compile('\\+'), u'プラス'],
+		[re.compile(u'\\.次'), u'ドットツギ'],
 		[re.compile('\\.'), u'ドット'],
 		[re.compile('\\_'), u'アンダースコア'],
 		[re.compile('\\='), u'イコール'],
@@ -294,6 +295,7 @@ def predic_build():
 		[re.compile('%'), u'パーセント'],
 		[re.compile('\\*'), u'アステリスク'],
 		
+		[re.compile(u'～'), u'から'],
 		[re.compile(u'\~'), u'から'],
 	]
 
@@ -353,22 +355,20 @@ def _speak(msg, index=None, isCharacter=False):
 			pass
 	msg = msg.lower()
 	if DEBUG_INFO: logwrite("_speak(%s)" % msg)
+	lw = None
+	#if DEBUG_INFO: lw = logwrite
 	for m in string.split(msg):
 		if len(m) > 0:
 			try:
-				if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
+				#if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
 				text = m.encode(CODE, 'ignore')
 				libjt_text2mecab(libjt, buff, text); str = buff.value
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
+				#if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
 				[feature, size] = Mecab_analysis(str)
-				if DEBUG_INFO: logwrite("Mecab_analysis done.")
+				#if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
-				if DEBUG_INFO:
-					lw = logwrite
-				else:
-					lw = None
+				#if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
 				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, 
 					fperiod_ = fperiod, 
 					feed_func_ = player.feed, # player.feed() is called inside
@@ -377,9 +377,9 @@ def _speak(msg, index=None, isCharacter=False):
 					thres2_ = thres2_level,
 					level_ = max_level,
 					logwrite_ = lw)
-				if DEBUG_INFO: logwrite("libjt_synthesis done.")
+				#if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
-				if DEBUG_INFO: logwrite("jtalk_refresh done.")
+				#if DEBUG_INFO: logwrite("jtalk_refresh done.")
 			except Exception, e:
 				if DEBUG_INFO: logwrite(e)
 	global lastIndex
@@ -468,7 +468,7 @@ def get_rate():
 	return 0
 
 def set_volume(vol):
-	global max_level, thres_level
+	global max_level, thres_level, thres2_level
 	max_level = int(326.67 * vol + 100) # 100..32767
 	thres_level = 128
 	thres2_level = 128
