@@ -71,7 +71,7 @@ def predic_build():
 	global predic
 	predic = [
 		[re.compile(u'\ufffd'), u' '],
- 		[re.compile(u'(\\?)々'), u'\\1\\1'],
+ 		[re.compile(u'(.)々'), u'\\1\\1'],
 		[re.compile('Welcome to'), u'ウェルカムトゥー'],
 		[re.compile('mei'), u'メイ'],
 
