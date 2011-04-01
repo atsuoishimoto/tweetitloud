@@ -99,11 +99,14 @@ def predic_build():
 		[re.compile(u'スリーマイル島原発'), u'スリーマイルとうゲンパツ'],
 
 		### zenkaku symbols convert
+		## ２０１１．０３．１１
+		## １，２３４円
 		[re.compile(u'　'), u' '],
 		[re.compile(u'．'), u'.'],
 		[re.compile(u'，'), u','],
 		[re.compile(u'；'), u';'],
 
+		## １３：３４
 		[re.compile(u'：'), u':'],
  		[re.compile(u'？'), u' '],
 		[re.compile(u'／'), u'/'],
@@ -186,8 +189,13 @@ def predic_build():
 		[re.compile(u'７'), u'7'],
 		[re.compile(u'８'), u'8'],
 		[re.compile(u'９'), u'9'],
+		
+		## 4/1・17:30
+		[re.compile(u'(\\d{1,2})/(\\d{1,2})・(\\d{1,2}):(\\d{1,2})'), u'\\1ガツ\\2ニチ\\3:\\4'],
+		## ０３・１２３４・５６７８
+		[re.compile(u'(\\d{2,4})・(\\d{1,4})・(\\d{4})'), u'\\1-\\2-\\3'],
+		## ３・１２３４
 		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
-		[re.compile(u'(\\d+)．(\\d+)'), u'\\1.\\2'],
 		
 		## 59 名
 		[re.compile(u'(\\d) 名'), u'\\1名'],
@@ -417,6 +425,7 @@ def predic_build():
 		[re.compile('\\*'), u'アステリスク'],
 		
 		[re.compile(u'～'), u'から'],
+		[re.compile(u'〜'), u'から'],
 		[re.compile(u'\~'), u'から'],
 		[re.compile(u'^は'), u'ハ'],
 	]
