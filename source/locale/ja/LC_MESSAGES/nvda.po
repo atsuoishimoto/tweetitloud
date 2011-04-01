@@ -2710,6 +2710,10 @@ msgstr "確定読み上げ"
 msgid "nvdajp2 key"
 msgstr "詳細読み上げ"
 
+#: gui\settingsDialogs.py:497
+msgid "nvdajp3 key"
+msgstr "フォネティック読み"
+
 #: gui\settingsDialogs.py:500
 msgid "Mouse settings"
 msgstr "マウス設定"

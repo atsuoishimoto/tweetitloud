@@ -121,6 +121,7 @@ outputDevice = string(default=default)
 	speakCommandKeys = boolean(default=false)
 	nvdajp1Key = boolean(default=false) 	# nvdajp
 	nvdajp2Key = boolean(default=true) 	# nvdajp
+	nvdajp3Key = boolean(default=true) 	# nvdajp
 
 [virtualBuffers]
 	maxLineLength = integer(default=100)
