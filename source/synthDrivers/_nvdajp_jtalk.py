@@ -250,13 +250,13 @@ def predic_build():
 		[re.compile(u' ０8'), u'ハチ'],
 		[re.compile(u' ０9'), u'キュウ'],
 		
-		[re.compile(u'(（|\()月(）|\))'), u' カッコゲツヨー '],
-		[re.compile(u'(（|\()火(）|\))'), u' カッコカヨー '],
-		[re.compile(u'(（|\()水(）|\))'), u' カッコスイヨー '],
-		[re.compile(u'(（|\()木(）|\))'), u' カッコモクヨー '],
-		[re.compile(u'(（|\()金(）|\))'), u' カッコキンヨー '],
-		[re.compile(u'(（|\()土(）|\))'), u' カッコドヨー '],
-		[re.compile(u'(（|\()日(）|\))'), u' カッコニチヨー '],
+		[re.compile(u'(\()月(\))'), u' カッコゲツヨー '],
+		[re.compile(u'(\()火(\))'), u' カッコカヨー '],
+		[re.compile(u'(\()水(\))'), u' カッコスイヨー '],
+		[re.compile(u'(\()木(\))'), u' カッコモクヨー '],
+		[re.compile(u'(\()金(\))'), u' カッコキンヨー '],
+		[re.compile(u'(\()土(\))'), u' カッコドヨー '],
+		[re.compile(u'(\()日(\))'), u' カッコニチヨー '],
 
 		[re.compile(u'(\\d+)\\:00\\:00'), u'\\1ジレーフンレービョウ'],
 		[re.compile(u'(\\d+)\\:(\\d+)\\:00'), u'\\1ジ\\2フンレービョウ'],
@@ -334,6 +334,7 @@ def predic_build():
 		
 		[re.compile(u'～'), u'から'],
 		[re.compile(u'\~'), u'から'],
+		[re.compile(u'^は'), u'ハ'],
 	]
 
 def predic_load():
