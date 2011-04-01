@@ -494,6 +494,9 @@ class KeyboardSettingsDialog(SettingsDialog):
 		self.nvdajp2KeyCheckBox=wx.CheckBox(self,wx.NewId(),label=_("nvdajp2 key"))
 		self.nvdajp2KeyCheckBox.SetValue(config.conf["keyboard"]["nvdajp2Key"])
 		settingsSizer.Add(self.nvdajp2KeyCheckBox,border=10,flag=wx.BOTTOM)
+		self.nvdajp3KeyCheckBox=wx.CheckBox(self,wx.NewId(),label=_("nvdajp3 key"))
+		self.nvdajp3KeyCheckBox.SetValue(config.conf["keyboard"]["nvdajp3Key"])
+		settingsSizer.Add(self.nvdajp3KeyCheckBox,border=10,flag=wx.BOTTOM)
 		# nvdajp end
 
 	def postInit(self):
@@ -513,6 +516,7 @@ class KeyboardSettingsDialog(SettingsDialog):
 		# nvdajp start
 		config.conf["keyboard"]["nvdajp1Key"]=self.nvdajp1KeyCheckBox.IsChecked()
 		config.conf["keyboard"]["nvdajp2Key"]=self.nvdajp2KeyCheckBox.IsChecked()
+		config.conf["keyboard"]["nvdajp3Key"]=self.nvdajp3KeyCheckBox.IsChecked()
 		# nvdajp end
 		super(KeyboardSettingsDialog, self).onOk(evt)
 
