@@ -71,16 +71,42 @@ def predic_build():
 	global predic
 	predic = [
 		[re.compile(u'\ufffd'), u' '],
+		
+		## 人々 昔々 家々 山々 
+		## Welcome to NVDA
+		## m001 mei
+		## tab
  		[re.compile(u'(.)々'), u'\\1\\1'],
 		[re.compile('Welcome to'), u'ウェルカムトゥー'],
-		[re.compile('mei'), u'メイ'],
+		[re.compile('^mei$'), u'メイ'],
+		[re.compile('\\btab\\b'), u'タブ'],
+		## 行操作 行をブックマーク 行を隠す
+		[re.compile(u'行操作'), u'ギョーソーサ'],
+		[re.compile(u'行をブックマーク'), u'ギョーをブックマーク'],
+		[re.compile(u'行を隠す'), u'ギョーを隠す'],
+		## 被災された方へ 圏内の方へ 支援をお考えの方へ 少しでも
+		[re.compile(u'された方'), u'されたかた'],
+		[re.compile(u'圏内の方'), u'圏内のかた'],
+		[re.compile(u'お考えの方'), u'お考えのかた'],
+		[re.compile(u'少しでも'), u'すこしでも'],
+		## 月～日 20:55 ～ 21:00
+		[re.compile(u'月～日'), u'ゲツからニチ'],
+		## 空要素タグ
+		[re.compile(u'空要素'), u'カラ要素'],
+		## ニコ生視聴中
+		[re.compile(u'ニコ生'), u'ニコナマ'],
+		## スリーマイル島原発
+		[re.compile(u'スリーマイル島原発'), u'スリーマイルとうゲンパツ'],
 
-		## zenkaku to hankaku convert
+		### zenkaku symbols convert
+		## ２０１１．０３．１１
+		## １，２３４円
 		[re.compile(u'　'), u' '],
 		[re.compile(u'．'), u'.'],
 		[re.compile(u'，'), u','],
 		[re.compile(u'；'), u';'],
 
+		## １３：３４
 		[re.compile(u'：'), u':'],
  		[re.compile(u'？'), u' '],
 		[re.compile(u'／'), u'/'],
@@ -94,32 +120,33 @@ def predic_build():
 		[re.compile(u'（'), u'('],
 		[re.compile(u'）'), u')'],
 
-		[re.compile(u'Ａ'), u'A'],
-		[re.compile(u'Ｂ'), u'B'],
-		[re.compile(u'Ｃ'), u'C'],
-		[re.compile(u'Ｄ'), u'D'],
-		[re.compile(u'Ｅ'), u'E'],
-		[re.compile(u'Ｆ'), u'F'],
-		[re.compile(u'Ｇ'), u'G'],
-		[re.compile(u'Ｈ'), u'H'],
-		[re.compile(u'Ｉ'), u'I'],
-		[re.compile(u'Ｊ'), u'J'],
-		[re.compile(u'Ｋ'), u'K'],
-		[re.compile(u'Ｌ'), u'L'],
-		[re.compile(u'Ｍ'), u'M'],
-		[re.compile(u'Ｎ'), u'N'],
-		[re.compile(u'Ｏ'), u'O'],
-		[re.compile(u'Ｐ'), u'P'],
-		[re.compile(u'Ｑ'), u'Q'],
-		[re.compile(u'Ｒ'), u'R'],
-		[re.compile(u'Ｓ'), u'S'],
-		[re.compile(u'Ｔ'), u'T'],
-		[re.compile(u'Ｕ'), u'U'],
-		[re.compile(u'Ｖ'), u'V'],
-		[re.compile(u'Ｗ'), u'W'],
-		[re.compile(u'Ｘ'), u'X'],
-		[re.compile(u'Ｙ'), u'Y'],
-		[re.compile(u'Ｚ'), u'Z'],
+		### zenkaku alphabet convert
+		# [re.compile(u'Ａ'), u'A'],
+		# [re.compile(u'Ｂ'), u'B'],
+		# [re.compile(u'Ｃ'), u'C'],
+		# [re.compile(u'Ｄ'), u'D'],
+		# [re.compile(u'Ｅ'), u'E'],
+		# [re.compile(u'Ｆ'), u'F'],
+		# [re.compile(u'Ｇ'), u'G'],
+		# [re.compile(u'Ｈ'), u'H'],
+		# [re.compile(u'Ｉ'), u'I'],
+		# [re.compile(u'Ｊ'), u'J'],
+		# [re.compile(u'Ｋ'), u'K'],
+		# [re.compile(u'Ｌ'), u'L'],
+		# [re.compile(u'Ｍ'), u'M'],
+		# [re.compile(u'Ｎ'), u'N'],
+		# [re.compile(u'Ｏ'), u'O'],
+		# [re.compile(u'Ｐ'), u'P'],
+		# [re.compile(u'Ｑ'), u'Q'],
+		# [re.compile(u'Ｒ'), u'R'],
+		# [re.compile(u'Ｓ'), u'S'],
+		# [re.compile(u'Ｔ'), u'T'],
+		# [re.compile(u'Ｕ'), u'U'],
+		# [re.compile(u'Ｖ'), u'V'],
+		# [re.compile(u'Ｗ'), u'W'],
+		# [re.compile(u'Ｘ'), u'X'],
+		# [re.compile(u'Ｙ'), u'Y'],
+		# [re.compile(u'Ｚ'), u'Z'],
 		
 		[re.compile(u'ａ'), u'a'],
 		[re.compile(u'ｂ'), u'b'],
@@ -148,7 +175,10 @@ def predic_build():
 		[re.compile(u'ｙ'), u'y'],
 		[re.compile(u'ｚ'), u'z'],
 		
-		## normalize number
+		## 無線LAN
+		[re.compile(u'無線LAN'), u'無線ラン'],
+		
+		### zenkaku numbers convert
 		[re.compile(u'０'), u'0'],
 		[re.compile(u'１'), u'1'],
 		[re.compile(u'２'), u'2'],
@@ -159,31 +189,107 @@ def predic_build():
 		[re.compile(u'７'), u'7'],
 		[re.compile(u'８'), u'8'],
 		[re.compile(u'９'), u'9'],
-		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
-		[re.compile(u'(\\d+)．(\\d+)'), u'\\1.\\2'],
 		
+		## 4/1・17:30
+		[re.compile(u'(\\d{1,2})/(\\d{1,2})・(\\d{1,2}):(\\d{1,2})'), u'\\1ガツ\\2ニチ\\3:\\4'],
+		## ０３・１２３４・５６７８
+		[re.compile(u'(\\d{2,4})・(\\d{1,4})・(\\d{4})'), u'\\1-\\2-\\3'],
+		## ３・１２３４
+		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
+		
+		## 59 名
+		[re.compile(u'(\\d) 名'), u'\\1名'],
+		
+		## 1MB 10MB 1.2MB 0.5MB 321.0MB 123.45MB
+		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
+
+		## (月) (火) (水) (木) (金) (土) (日)
+		[re.compile(u'(\()月(\))'), u' カッコゲツヨー '],
+		[re.compile(u'(\()火(\))'), u' カッコカヨー '],
+		[re.compile(u'(\()水(\))'), u' カッコスイヨー '],
+		[re.compile(u'(\()木(\))'), u' カッコモクヨー '],
+		[re.compile(u'(\()金(\))'), u' カッコキンヨー '],
+		[re.compile(u'(\()土(\))'), u' カッコドヨー '],
+		[re.compile(u'(\()日(\))'), u' カッコニチヨー '],
+
+		## 12:00:00
+		[re.compile(u'(\\d{1,2})\\:00\\:00'), u'\\1ジレーフンレービョー'],
+		## 12:01:00
+		## 12:34:00
+		[re.compile(u'(\\d{1,2})\\:(\\d{1,2})\\:00'), u'\\1ジ\\2フンレービョー'],
+		## 12:00:59
+		[re.compile(u'(\\d{1,2})\\:00\\:(\\d{1,2})'), u'\\1ジレーフン\\2ビョー'],
+		## 12:00
+		## 19:00 
+		[re.compile(u'(\\d{1,2})\\:00'), u'\\1ジレーフン'],
+		## 1:02:03
+		[re.compile(u'(\\d{1,2})\\:(\\d{1,2})\\:(\\d{1,2})'), u'\\1ジ\\2フン\\3ビョー'],
+		
+		## 19:05 
+		## 19:50
+		[re.compile(u'19\\:(\\d{2})'), u'ジュークジ\\1フン'],
+		## 9:05分
+		[re.compile(u'9\\:(\\d{2})分'), u'クジ\\1フン'],
+		## 9:05
+		[re.compile(u'9\\:(\\d{2})'), u'クジ\\1フン'],
+		## 0:00 0:01 1:01 2:09 
+		## 3:18
+		## 00:00 00:01 01:01 02:09 03:18 
+		## 0:0 0:1 1:1 9:9 (not time)
+		[re.compile(u'(\\d{1,2})\\:(\\d{2})'), u'\\1ジ\\2フン'],
+		
+		## 2000-01-01 2011-03-11 2000-01-10 2000-10-10
+		## 9999-99-99
+		## 2000/01/01 2011/03/11 2000/01/10 
+		## 2000/1/1 2000/01/1 2000/1/01
+		## 2000/10/10 9999/99/99
+		## 1999.3.11 
+		## 1999.1.1 
+		## 1999.1.01
+		## 1999.03.11
+		## 1999.10.11
+		## 2011.3.11 
+		## 2011.03.11 
+		## 2011.10.11 
+		[re.compile(u'\\b([1-9]\\d{3})\\-(\\d{2})\\-(\\d{2})\\b'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'\\b([1-9]\\d{3})\\.(\\d)\\.(\\d{1,2})\\b'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'\\b([1-9]\\d{3})\\.0(\\d)\\.(\\d{2})\\b'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'\\b([1-9]\\d{3})\\.(\\d{2})\\.(\\d{2})\\b'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'\\b([1-9]\\d{3})\\/(\\d{1,2})\\/(\\d{1,2})\\b'), u'\\1ネン\\2ガツ\\3ニチ'],
+		## 1/1 1/100 500/3 (not date)
+		## 3/11 12/1
+		## 10/1 10/11 12/31
+		## 01/01 03/11 
+		## 13/00 99/00 12/32 
+		[re.compile(u'\\b(\\d{1})\\/(\\d{2})\\b'), u'\\1ガツ\\2ニチ'],
+		[re.compile(u'\\b(\\d{2})\\/(\\d{1})\\b'), u'\\1ガツ\\2ニチ'],
+		[re.compile(u'\\b(\\d{2})\\/(\\d{2})\\b'), u'\\1ガツ\\2ニチ'],
+		[re.compile(u'\\b(\\d+)\\/(\\d+)\\b'), u'\\1スラッシュ\\2'],
+
+		## 1.2.3
+		[re.compile(u'\\b(\\d+)\\.(\\d+)\\.(\\d+)\\b'), u'\\1テン\\2テン\\3'],
+
 		## 1,234
 		## 1,234,567
 		## 1,234,567,890
-		## 1,0 = ichi zero
-		[re.compile(u'(\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
-		[re.compile(u'(\\d\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		## 1,23 = ichi comma niju san
+		## 1,0 = ichi comma zero
+		[re.compile(u'(\\d)\\,(\\d{3})'), u'\\1\\2'],
+		[re.compile(u'(\\d{2})\\,(\\d{3})'), u'\\1\\2'],
+		[re.compile(u'(\\d{3})\\,(\\d{3})'), u'\\1\\2'],
+		[re.compile(u'(\\d)\\,(\\d{1,2})'), u'\\1カンマ\\2'],
 		
-		## 2011.03.11 -> 2011/3/11
-		## 2011.10.11 -> 2011/3/11
-		[re.compile(u'\\b(\\d\\d\\d\\d)\\.0(\\d)\\.(\\d\\d)\\b'), u'\\1/\\2/\\3'],
-		[re.compile(u'\\b(\\d\\d\\d\\d)\\.(\\d\\d)\\.(\\d\\d)\\b'), u'\\1/\\2/\\3'],
-
-		## normalize phone number
-		## 023(4567)0900 -> 023-4567-0900
-		[re.compile(u'(\\d+)\\((\\d+)\\)(\\d+)'), u'\\1-\\2-\\3'],
-		
+		### normalize phone number
+		## 023(4567)0900
+		## 0123(4567)0900
+		## 01233(4567)0900
 		## 023-4567-0900
 		## 023-400-0900
 		## 03-4567-0100
 		## 0123-45-0100
 		## 0123456789
+		[re.compile(u'(\\d{1,4})\\((\\d{1,4})\\)(\\d{4})'), u'\\1-\\2-\\3'],
+		
 		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０\\1 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6 ０\\7ノ  ０\\8 ０\\9 ０\\10 ０\\11 '],
 		
@@ -199,42 +305,53 @@ def predic_build():
 		[re.compile(u'(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０\\1 ０\\2 ０\\3 ０\\4ノ  ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
 		
-		[re.compile(u'0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
-			u'  ０0 ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5ノ  ０\\6 ０\\7 ０\\8 ０\\9 '],
+		[re.compile(u'([^\\.])0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
+			u'\\1  ０0 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
 		
-		[re.compile(u' ０0'), u'ゼロ'],
-		[re.compile(u' ０1'), u'イチ'],
-		[re.compile(u' ０2'), u'ニイ'],
-		[re.compile(u' ０3'), u'サン'],
-		[re.compile(u' ０4'), u'ヨン'],
-		[re.compile(u' ０5'), u'ゴオ'],
-		[re.compile(u' ０6'), u'ロク'],
-		[re.compile(u' ０7'), u'ナナ'],
-		[re.compile(u' ０8'), u'ハチ'],
-		[re.compile(u' ０9'), u'キュウ'],
+		# [re.compile(u' ０0'), u'ゼロ'],
+		# [re.compile(u' ０1'), u'イチ'],
+		# [re.compile(u' ０2'), u'ニイ'],
+		# [re.compile(u' ０3'), u'サン'],
+		# [re.compile(u' ０4'), u'ヨン'],
+		# [re.compile(u' ０5'), u'ゴオ'],
+		# [re.compile(u' ０6'), u'ロク'],
+		# [re.compile(u' ０7'), u'ナナ'],
+		# [re.compile(u' ０8'), u'ハチ'],
+		# [re.compile(u' ０9'), u'キュウ'],
 		
-		## numbers with dot and zeros
+		### numbers with dot and zeros
 		## 1.0000012345
 		## 1.000012345
 		## 1.00012345
 		## 1.0012345
 		## 1.012345
 		## 1.12345
+		## 1.1234
 		## 1.1100
 		## 1.110
-		## 1.11
-		## 1.1
-		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンゼロゼロゼロゼロゼロ\\2 '],
-		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンゼロゼロゼロゼロ\\2 '],
-		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンゼロゼロゼロ\\2 '],
-		[re.compile(u'(\\d+)\\.00(\\d+)'), u' \\1テンゼロゼロ\\2 '],
-		[re.compile(u'(\\d+)\\.0(\\d+)'), u' \\1テンゼロ\\2 '],
-		[re.compile(u'(\\d+)\\.(\\d+)'), u' \\1テン\\2 '],
-
+		## 1.123
+		## 1.000001 1.000000
+		## 1.00001 1.00000
+		## 1.0001 1.0000
+		## 1.001 1.000 
+		## 1.01 1.00 1.11
+		## 1.1 1.0
+		## 123.45MB
 		## a0123
 		## a0001
 		## a001
 		## a01
+		
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 ０\\9 ０\\10 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 ０\\9 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 '],
+		[re.compile(u'(\\d+)\\.(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 '],
+		[re.compile(u'(\\d+)\\.(\\d)'), u' \\1テン ０\\2 '],
+
 		[re.compile(u'\\b0(\\d)(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 ０\\3 '],
 		[re.compile(u'\\b0(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 '],
 		[re.compile(u'\\b0(\\d)'), u' ０0 ０\\1 '],
@@ -250,32 +367,7 @@ def predic_build():
 		[re.compile(u' ０8'), u'ハチ'],
 		[re.compile(u' ０9'), u'キュウ'],
 		
-		[re.compile(u'(\()月(\))'), u' カッコゲツヨー '],
-		[re.compile(u'(\()火(\))'), u' カッコカヨー '],
-		[re.compile(u'(\()水(\))'), u' カッコスイヨー '],
-		[re.compile(u'(\()木(\))'), u' カッコモクヨー '],
-		[re.compile(u'(\()金(\))'), u' カッコキンヨー '],
-		[re.compile(u'(\()土(\))'), u' カッコドヨー '],
-		[re.compile(u'(\()日(\))'), u' カッコニチヨー '],
-
-		[re.compile(u'(\\d+)\\:00\\:00'), u'\\1ジレーフンレービョウ'],
-		[re.compile(u'(\\d+)\\:(\\d+)\\:00'), u'\\1ジ\\2フンレービョウ'],
-		[re.compile(u'(\\d+)\\:00\\:(\\d+)'), u'\\1ジレイフン\\2ビョウ'],
-		[re.compile(u'(\\d+)\\:00'), u'\\1ジレイフン'],
-		[re.compile(u'(\\d+)\\:(\\d+)\\:(\\d+)'), u'\\1ジ\\2フン\\3ビョウ'],
-		
-		[re.compile(u'19\\:(\\d+)'), u'ジュークジ\\1フン'],
-		[re.compile(u'9\\:(\\d+)分'), u'クジ\\1フン'],
-		[re.compile(u'9\\:(\\d+)'), u'クジ\\1フン'],
-		[re.compile(u'(\\d+)\\:(\\d+)'), u'\\1ジ\\2フン'],
-		
-		[re.compile(u'(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)'), u'\\1ネン\\2ガツ\\3ニチ'],
-		[re.compile(u'(\\d\\d\\d\\d)\\/(\\d+)\\/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
-		[re.compile(u'(\\d{1,2})\\/(\\d{1,2})'), u'\\1ガツ\\2ニチ'],
-
-		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
-
-		## zenkaku
+		### zenkaku symbols
 		[re.compile(u'。'), ' '],
 		[re.compile(u'、'), ' '],
 		[re.compile(u'…'), ' '],
@@ -292,12 +384,12 @@ def predic_build():
 		[re.compile(u'◎'), ' '],
 		[re.compile(u'◆'), ' '],
 		
-		## hankaku
+		### hankaku symbols
 		[re.compile(u'>'), ' '],
 		[re.compile(u'<'), ' '],
 		[re.compile(u'='), '='],
 
-		# trim space
+		### trim space
 		[re.compile(u'マイ '), u'マイ'],
 		[re.compile(u'コントロール パネル'), u'コントロールパネル'],
 		[re.compile(u'タスク バー'), u'タスクバー'],
@@ -333,6 +425,7 @@ def predic_build():
 		[re.compile('\\*'), u'アステリスク'],
 		
 		[re.compile(u'～'), u'から'],
+		[re.compile(u'〜'), u'から'],
 		[re.compile(u'\~'), u'から'],
 		[re.compile(u'^は'), u'ハ'],
 	]
