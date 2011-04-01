@@ -76,21 +76,23 @@ def predic_build():
 		[re.compile('mei'), u'メイ'],
 
 		## zenkaku to hankaku convert
-		[re.compile(u'　'), ' '],
-		[re.compile(u'．'), '.'],
-		[re.compile(u'，'), ','],
-		[re.compile(u'；'), ';'],
+		[re.compile(u'　'), u' '],
+		[re.compile(u'．'), u'.'],
+		[re.compile(u'，'), u','],
+		[re.compile(u'；'), u';'],
 
 		[re.compile(u'：'), u':'],
  		[re.compile(u'？'), u' '],
 		[re.compile(u'／'), u'/'],
-		[re.compile(u'｜'), '|'],
-		[re.compile(u'－'), '-'],
-		[re.compile(u'＝'), '='],
-		[re.compile(u'＜'), '>'],
-		[re.compile(u'＞'), '<'],
-		[re.compile(u'％'), '%'],
-		[re.compile(u'＊'), '*'],
+		[re.compile(u'｜'), u'|'],
+		[re.compile(u'－'), u'-'],
+		[re.compile(u'＝'), u'='],
+		[re.compile(u'＜'), u'>'],
+		[re.compile(u'＞'), u'<'],
+		[re.compile(u'％'), u'%'],
+		[re.compile(u'＊'), u'*'],
+		[re.compile(u'（'), u'('],
+		[re.compile(u'）'), u')'],
 
 		[re.compile(u'Ａ'), u'A'],
 		[re.compile(u'Ｂ'), u'B'],
@@ -160,15 +162,28 @@ def predic_build():
 		[re.compile(u'(\\d+)・(\\d+)'), u'\\1.\\2'],
 		[re.compile(u'(\\d+)．(\\d+)'), u'\\1.\\2'],
 		
+		## 1,234
+		## 1,234,567
+		## 1,234,567,890
+		## 1,0 = ichi zero
 		[re.compile(u'(\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
 		[re.compile(u'(\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
 		[re.compile(u'(\\d\\d\\d)\\,(\\d\\d\\d)'), u'\\1\\2'],
+		
+		## 2011.03.11 -> 2011/3/11
+		## 2011.10.11 -> 2011/3/11
+		[re.compile(u'\\b(\\d\\d\\d\\d)\\.0(\\d)\\.(\\d\\d)\\b'), u'\\1/\\2/\\3'],
+		[re.compile(u'\\b(\\d\\d\\d\\d)\\.(\\d\\d)\\.(\\d\\d)\\b'), u'\\1/\\2/\\3'],
 
 		## normalize phone number
-		[re.compile(u'(\\d+)（(\\d+)'), '\\1(\\2'],
-		[re.compile(u'(\\d+)）(\\d+)'), '\\1)\\2'],
+		## 023(4567)0900 -> 023-4567-0900
 		[re.compile(u'(\\d+)\\((\\d+)\\)(\\d+)'), u'\\1-\\2-\\3'],
-
+		
+		## 023-4567-0900
+		## 023-400-0900
+		## 03-4567-0100
+		## 0123-45-0100
+		## 0123456789
 		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０\\1 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6 ０\\7ノ  ０\\8 ０\\9 ０\\10 ０\\11 '],
 		
@@ -187,20 +202,42 @@ def predic_build():
 		[re.compile(u'0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０0 ０\\1 ０\\2ノ  ０\\3 ０\\4 ０\\5ノ  ０\\6 ０\\7 ０\\8 ０\\9 '],
 		
-		[re.compile(u'(\\D)0(\\d)(\\d)(\\d)'), u'\\1  ０0 ０\\2 ０\\3 ０\\4 '],
-		[re.compile(u'(\\D)0(\\d)(\\d)'), u'\\1  ０0 ０\\2 ０\\3 '],
-		[re.compile(u'(\\D)0(\\d)'), u'\\1  ０0 ０\\2 '],
-
-		[re.compile(u'\\b000'), u'ゼロゼロゼロ'],
-		[re.compile(u'\\b00'), u'ゼロゼロ'],
-		[re.compile(u'\\b0'), u'ゼロ'],
+		[re.compile(u' ０0'), u'ゼロ'],
+		[re.compile(u' ０1'), u'イチ'],
+		[re.compile(u' ０2'), u'ニイ'],
+		[re.compile(u' ０3'), u'サン'],
+		[re.compile(u' ０4'), u'ヨン'],
+		[re.compile(u' ０5'), u'ゴオ'],
+		[re.compile(u' ０6'), u'ロク'],
+		[re.compile(u' ０7'), u'ナナ'],
+		[re.compile(u' ０8'), u'ハチ'],
+		[re.compile(u' ０9'), u'キュウ'],
 		
-		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンレイレイレイレイレイ\\2 '],
-		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンレイレイレイレイ\\2 '],
-		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンレイレイレイ\\2 '],
-		[re.compile(u'(\\d+)\\.00(\\d+)'), u' \\1テンレイレイ\\2 '],
-		[re.compile(u'(\\d+)\\.0(\\d+)'), u' \\1テンレイ\\2 '],
+		## numbers with dot and zeros
+		## 1.0000012345
+		## 1.000012345
+		## 1.00012345
+		## 1.0012345
+		## 1.012345
+		## 1.12345
+		## 1.1100
+		## 1.110
+		## 1.11
+		## 1.1
+		[re.compile(u'(\\d+)\\.00000(\\d+)'), u' \\1テンゼロゼロゼロゼロゼロ\\2 '],
+		[re.compile(u'(\\d+)\\.0000(\\d+)'), u' \\1テンゼロゼロゼロゼロ\\2 '],
+		[re.compile(u'(\\d+)\\.000(\\d+)'), u' \\1テンゼロゼロゼロ\\2 '],
+		[re.compile(u'(\\d+)\\.00(\\d+)'), u' \\1テンゼロゼロ\\2 '],
+		[re.compile(u'(\\d+)\\.0(\\d+)'), u' \\1テンゼロ\\2 '],
 		[re.compile(u'(\\d+)\\.(\\d+)'), u' \\1テン\\2 '],
+
+		## a0123
+		## a0001
+		## a001
+		## a01
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 ０\\3 '],
+		[re.compile(u'\\b0(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 '],
+		[re.compile(u'\\b0(\\d)'), u' ０0 ０\\1 '],
 
 		[re.compile(u' ０0'), u'ゼロ'],
 		[re.compile(u' ０1'), u'イチ'],
@@ -212,7 +249,7 @@ def predic_build():
 		[re.compile(u' ０7'), u'ナナ'],
 		[re.compile(u' ０8'), u'ハチ'],
 		[re.compile(u' ０9'), u'キュウ'],
-
+		
 		[re.compile(u'(（|\()月(）|\))'), u' カッコゲツヨー '],
 		[re.compile(u'(（|\()火(）|\))'), u' カッコカヨー '],
 		[re.compile(u'(（|\()水(）|\))'), u' カッコスイヨー '],
@@ -233,7 +270,7 @@ def predic_build():
 		[re.compile(u'(\\d+)\\:(\\d+)'), u'\\1ジ\\2フン'],
 		
 		[re.compile(u'(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)'), u'\\1ネン\\2ガツ\\3ニチ'],
-		[re.compile(u'(\\d+)\\/(\\d+)\\/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
+		[re.compile(u'(\\d\\d\\d\\d)\\/(\\d+)\\/(\\d+)'), u'\\1ネン\\2ガツ\\3ニチ'],
 		[re.compile(u'(\\d{1,2})\\/(\\d{1,2})'), u'\\1ガツ\\2ニチ'],
 
 		[re.compile(u'(\\d+)MB'), u'\\1メガバイト'],
@@ -271,12 +308,13 @@ def predic_build():
 		[re.compile(u'←'), u'ヒダリヤジルシ'],
 		[re.compile(u'↑'), u'ウエヤジルシ'],
 		[re.compile(u'↓'), u'シタヤジルシ'],
-		[re.compile('\.\.\.'), u' テンテンテン '],
+		[re.compile('\.\.\.'), u'テンテンテン '],
 
 		[re.compile('\\/'), ' '],
 		[re.compile('\\\\'), ' '],
 		[re.compile('\\:'), u'コロン'],
 		[re.compile('\\+'), u'プラス'],
+		[re.compile(u'\\.次'), u'ドットツギ'],
 		[re.compile('\\.'), u'ドット'],
 		[re.compile('\\_'), u'アンダースコア'],
 		[re.compile('\\='), u'イコール'],
@@ -294,6 +332,7 @@ def predic_build():
 		[re.compile('%'), u'パーセント'],
 		[re.compile('\\*'), u'アステリスク'],
 		
+		[re.compile(u'～'), u'から'],
 		[re.compile(u'\~'), u'から'],
 	]
 
@@ -353,22 +392,20 @@ def _speak(msg, index=None, isCharacter=False):
 			pass
 	msg = msg.lower()
 	if DEBUG_INFO: logwrite("_speak(%s)" % msg)
+	lw = None
+	#if DEBUG_INFO: lw = logwrite
 	for m in string.split(msg):
 		if len(m) > 0:
 			try:
-				if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
+				#if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
 				text = m.encode(CODE, 'ignore')
 				libjt_text2mecab(libjt, buff, text); str = buff.value
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
+				#if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
 				[feature, size] = Mecab_analysis(str)
-				if DEBUG_INFO: logwrite("Mecab_analysis done.")
+				#if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
-				if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
-				if DEBUG_INFO:
-					lw = logwrite
-				else:
-					lw = None
+				#if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
 				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, 
 					fperiod_ = fperiod, 
 					feed_func_ = player.feed, # player.feed() is called inside
@@ -377,9 +414,9 @@ def _speak(msg, index=None, isCharacter=False):
 					thres2_ = thres2_level,
 					level_ = max_level,
 					logwrite_ = lw)
-				if DEBUG_INFO: logwrite("libjt_synthesis done.")
+				#if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
-				if DEBUG_INFO: logwrite("jtalk_refresh done.")
+				#if DEBUG_INFO: logwrite("jtalk_refresh done.")
 			except Exception, e:
 				if DEBUG_INFO: logwrite(e)
 	global lastIndex
@@ -468,7 +505,7 @@ def get_rate():
 	return 0
 
 def set_volume(vol):
-	global max_level, thres_level
+	global max_level, thres_level, thres2_level
 	max_level = int(326.67 * vol + 100) # 100..32767
 	thres_level = 128
 	thres2_level = 128
