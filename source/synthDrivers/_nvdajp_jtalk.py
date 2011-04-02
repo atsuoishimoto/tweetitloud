@@ -70,7 +70,10 @@ def jtalk_clear():
 def predic_build():
 	global predic
 	predic = [
+		### Unicode REPLACEMENT CHARACTER
 		[re.compile(u'\ufffd'), u' '],
+		### zenkaku space normalize
+		[re.compile(u'　'), u' '],
 		
 		## 人々 昔々 家々 山々 
 		## Welcome to NVDA
@@ -98,15 +101,25 @@ def predic_build():
 		## スリーマイル島原発
 		[re.compile(u'スリーマイル島原発'), u'スリーマイルとうゲンパツ'],
 
+		### trim space
+		[re.compile(u'マイ '), u'マイ'],
+		[re.compile(u'コントロール パネル'), u'コントロールパネル'],
+		[re.compile(u'タスク バー'), u'タスクバー'],
+		[re.compile(u'の '), u'の'], # remove space "1の 7" -> "1の7"
+		[re.compile(u' 側'), u' ガワ'],
+		
+		## isolated hiragana HA (mecab replaces to WA)
+		## は 
+		[re.compile(u'^は'), u'ハ'],
+		[re.compile(u'\\sは'), u'ハ'],
+		
 		### zenkaku symbols convert
 		## ２０１１．０３．１１
 		## １，２３４円
-		[re.compile(u'　'), u' '],
+		## １３：３４
 		[re.compile(u'．'), u'.'],
 		[re.compile(u'，'), u','],
 		[re.compile(u'；'), u';'],
-
-		## １３：３４
 		[re.compile(u'：'), u':'],
  		[re.compile(u'？'), u' '],
 		[re.compile(u'／'), u'/'],
@@ -119,34 +132,37 @@ def predic_build():
 		[re.compile(u'＊'), u'*'],
 		[re.compile(u'（'), u'('],
 		[re.compile(u'）'), u')'],
+		[re.compile(u'［'), u'['],
+		[re.compile(u'］'), u']'],
+		[re.compile(u'”'), u'\\"'],
 
 		### zenkaku alphabet convert
-		# [re.compile(u'Ａ'), u'A'],
-		# [re.compile(u'Ｂ'), u'B'],
-		# [re.compile(u'Ｃ'), u'C'],
-		# [re.compile(u'Ｄ'), u'D'],
-		# [re.compile(u'Ｅ'), u'E'],
-		# [re.compile(u'Ｆ'), u'F'],
-		# [re.compile(u'Ｇ'), u'G'],
-		# [re.compile(u'Ｈ'), u'H'],
-		# [re.compile(u'Ｉ'), u'I'],
-		# [re.compile(u'Ｊ'), u'J'],
-		# [re.compile(u'Ｋ'), u'K'],
-		# [re.compile(u'Ｌ'), u'L'],
-		# [re.compile(u'Ｍ'), u'M'],
-		# [re.compile(u'Ｎ'), u'N'],
-		# [re.compile(u'Ｏ'), u'O'],
-		# [re.compile(u'Ｐ'), u'P'],
-		# [re.compile(u'Ｑ'), u'Q'],
-		# [re.compile(u'Ｒ'), u'R'],
-		# [re.compile(u'Ｓ'), u'S'],
-		# [re.compile(u'Ｔ'), u'T'],
-		# [re.compile(u'Ｕ'), u'U'],
-		# [re.compile(u'Ｖ'), u'V'],
-		# [re.compile(u'Ｗ'), u'W'],
-		# [re.compile(u'Ｘ'), u'X'],
-		# [re.compile(u'Ｙ'), u'Y'],
-		# [re.compile(u'Ｚ'), u'Z'],
+		[re.compile(u'Ａ'), u'A'],
+		[re.compile(u'Ｂ'), u'B'],
+		[re.compile(u'Ｃ'), u'C'],
+		[re.compile(u'Ｄ'), u'D'],
+		[re.compile(u'Ｅ'), u'E'],
+		[re.compile(u'Ｆ'), u'F'],
+		[re.compile(u'Ｇ'), u'G'],
+		[re.compile(u'Ｈ'), u'H'],
+		[re.compile(u'Ｉ'), u'I'],
+		[re.compile(u'Ｊ'), u'J'],
+		[re.compile(u'Ｋ'), u'K'],
+		[re.compile(u'Ｌ'), u'L'],
+		[re.compile(u'Ｍ'), u'M'],
+		[re.compile(u'Ｎ'), u'N'],
+		[re.compile(u'Ｏ'), u'O'],
+		[re.compile(u'Ｐ'), u'P'],
+		[re.compile(u'Ｑ'), u'Q'],
+		[re.compile(u'Ｒ'), u'R'],
+		[re.compile(u'Ｓ'), u'S'],
+		[re.compile(u'Ｔ'), u'T'],
+		[re.compile(u'Ｕ'), u'U'],
+		[re.compile(u'Ｖ'), u'V'],
+		[re.compile(u'Ｗ'), u'W'],
+		[re.compile(u'Ｘ'), u'X'],
+		[re.compile(u'Ｙ'), u'Y'],
+		[re.compile(u'Ｚ'), u'Z'],
 		
 		[re.compile(u'ａ'), u'a'],
 		[re.compile(u'ｂ'), u'b'],
@@ -287,7 +303,6 @@ def predic_build():
 		## 023-400-0900
 		## 03-4567-0100
 		## 0123-45-0100
-		## 0123456789
 		[re.compile(u'(\\d{1,4})\\((\\d{1,4})\\)(\\d{4})'), u'\\1-\\2-\\3'],
 		
 		[re.compile(u'(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
@@ -305,19 +320,8 @@ def predic_build():
 		[re.compile(u'(\\d)(\\d)(\\d)(\\d)\\-(\\d)(\\d)\\-(\\d)(\\d)(\\d)(\\d)'), 
 			u'  ０\\1 ０\\2 ０\\3 ０\\4ノ  ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
 		
-		[re.compile(u'([^\\.])0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
-			u'\\1  ０0 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
-		
-		# [re.compile(u' ０0'), u'ゼロ'],
-		# [re.compile(u' ０1'), u'イチ'],
-		# [re.compile(u' ０2'), u'ニイ'],
-		# [re.compile(u' ０3'), u'サン'],
-		# [re.compile(u' ０4'), u'ヨン'],
-		# [re.compile(u' ０5'), u'ゴオ'],
-		# [re.compile(u' ０6'), u'ロク'],
-		# [re.compile(u' ０7'), u'ナナ'],
-		# [re.compile(u' ０8'), u'ハチ'],
-		# [re.compile(u' ０9'), u'キュウ'],
+		#[re.compile(u'([^\\.]*)0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), 
+		#	u'\\1  ０0 ０\\2 ０\\3ノ  ０\\4 ０\\5 ０\\6ノ  ０\\7 ０\\8 ０\\9 ０\\10 '],
 		
 		### numbers with dot and zeros
 		## 1.0000012345
@@ -341,7 +345,15 @@ def predic_build():
 		## a0001
 		## a001
 		## a01
-		
+		## 0123456789
+		## 012345678
+		## 01234567
+		## 0123456
+		## 012345
+		## 01234
+		## 0123
+		## 012
+		## 01	
 		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 ０\\9 ０\\10 '],
 		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 ０\\9 '],
 		[re.compile(u'(\\d+)\\.(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 ０\\4 ０\\5 ０\\6 ０\\7 ０\\8 '],
@@ -352,9 +364,15 @@ def predic_build():
 		[re.compile(u'(\\d+)\\.(\\d)(\\d)'), u' \\1テン ０\\2 ０\\3 '],
 		[re.compile(u'(\\d+)\\.(\\d)'), u' \\1テン ０\\2 '],
 
-		[re.compile(u'\\b0(\\d)(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 ０\\3 '],
-		[re.compile(u'\\b0(\\d)(\\d)'), u' ０0 ０\\1 ０\\2 '],
-		[re.compile(u'\\b0(\\d)'), u' ０0 ０\\1 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4  ０\\5  ０\\6  ０\\7  ０\\8  ０\\9 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4  ０\\5  ０\\6  ０\\7  ０\\8 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4  ０\\5  ０\\6  ０\\7 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4  ０\\5  ０\\6 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4  ０\\5 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3  ０\\4 '],
+		[re.compile(u'\\b0(\\d)(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2  ０\\3 '],
+		[re.compile(u'\\b0(\\d)(\\d)'), u'  ０0  ０\\1  ０\\2 '],
+		[re.compile(u'\\b0(\\d)'), u'  ０0  ０\\1 '],
 
 		[re.compile(u' ０0'), u'ゼロ'],
 		[re.compile(u' ０1'), u'イチ'],
@@ -367,67 +385,71 @@ def predic_build():
 		[re.compile(u' ０8'), u'ハチ'],
 		[re.compile(u' ０9'), u'キュウ'],
 		
-		### zenkaku symbols
-		[re.compile(u'。'), ' '],
-		[re.compile(u'、'), ' '],
-		[re.compile(u'…'), ' '],
-		[re.compile(u'・'), u' '],
-		[re.compile(u'’'), ''],
-		[re.compile(u'（'), ' '],
-		[re.compile(u'）'), ' '],
-		[re.compile(u'≫'), ' '],
-		[re.compile(u'「'), ' '],
-		[re.compile(u'」'), ' '],
-		[re.compile(u'【'), ' '],
-		[re.compile(u'】'), ' '],
-		[re.compile(u'●'), ' '],
-		[re.compile(u'◎'), ' '],
-		[re.compile(u'◆'), ' '],
+		### zenkaku symbols: ignore (split engine input)
+		### あ…い≫う【え】お●か◎き◆くけこ
+		### 阪神・淡路
+		[re.compile(u'。'), u'。 '],
+		[re.compile(u'、'), u'、 '],
+		[re.compile(u'…'), u'… '],
+		[re.compile(u'≫'), u'≫ '],
+		[re.compile(u'「'), u' 「'],
+		[re.compile(u'」'), u'」 '],
+		[re.compile(u'【'), u' 【'],
+		[re.compile(u'】'), u'】 '],
+		[re.compile(u'●'), u'● '],
+		[re.compile(u'◎'), u'◎ '],
+		[re.compile(u'◆'), u'◆ '],
+		[re.compile(u'・'), u'・ '],
 		
-		### hankaku symbols
-		[re.compile(u'>'), ' '],
-		[re.compile(u'<'), ' '],
-		[re.compile(u'='), '='],
-
-		### trim space
-		[re.compile(u'マイ '), u'マイ'],
-		[re.compile(u'コントロール パネル'), u'コントロールパネル'],
-		[re.compile(u'タスク バー'), u'タスクバー'],
-		[re.compile(u'の '), u'の'], # remove space "1の 7" -> "1の7"
-		[re.compile(u' 側'), u' ガワ'],
-		
+		### zenkaku symbols: pronunciation
+		### → ← ↑ ↓
 		[re.compile(u'→'), u'ミギヤジルシ'],
 		[re.compile(u'←'), u'ヒダリヤジルシ'],
 		[re.compile(u'↑'), u'ウエヤジルシ'],
 		[re.compile(u'↓'), u'シタヤジルシ'],
+		
+		### hankaku symbols: ignore / pronunciation
+		### ... .次 a.b
 		[re.compile('\.\.\.'), u'テンテンテン '],
-
-		[re.compile('\\/'), ' '],
-		[re.compile('\\\\'), ' '],
-		[re.compile('\\:'), u'コロン'],
-		[re.compile('\\+'), u'プラス'],
 		[re.compile(u'\\.次'), u'ドットツギ'],
 		[re.compile('\\.'), u'ドット'],
-		[re.compile('\\_'), u'アンダースコア'],
+		
+		## http://abc.def/file.html
+		## 1+1-2=0 
+		## @kantei_saigai
+		## *important*
+		## getchar();
+		## a | b
+		## 'a'
+		## "a"
+		[re.compile('\\/'), u'スラッシュ'],
+		[re.compile('\\:'), u'コロン'],
+		[re.compile('\\+'), u'プラス'],
+		[re.compile('\\-'), u'ハイフン'],
+		[re.compile('\\_'), u'カセン'],
 		[re.compile('\\='), u'イコール'],
+		[re.compile('\\%'), u'パーセント'],
+		[re.compile('\\*'), u'アスタリスク'],
 		[re.compile('\\;'), u'セミコロン'],
-		[re.compile('\\['), u'ダイカッコ'],
-		[re.compile('\\]'), u' '],
-		[re.compile('\\('), u'カッコ'],
-		[re.compile('\\)'), u' '],
 		[re.compile('\\|'), u'タテセン'],
 		[re.compile('\\#'), u'シャープ'],
 		[re.compile('\\"'), u'コーテーション'],
-		[re.compile('\\<'), u'ショーナリ'],
-		[re.compile('\\>'), u'ダイナリ'],
-		[re.compile('\\\''), ' '],
-		[re.compile('%'), u'パーセント'],
-		[re.compile('\\*'), u'アステリスク'],
+		[re.compile('\\\''), u'アポストロフィ'],
+		[re.compile(','), u' カンマ '],
+
+		## [1] (2) <3>
+		## ［１］　（２）　＜３＞
+		[re.compile('\\['), u' ダイカッコヒラキ '],
+		[re.compile('\\]'), u' ダイカッコトジ '],
+		[re.compile('\\('), u' カッコヒラキ '],
+		[re.compile('\\)'), u' カッコトジ '],
+		[re.compile('\\<'), u' ショーナリ '],
+		[re.compile('\\>'), u' ダイナリ '],
 		
+		## １～２　１〜２　1~2
 		[re.compile(u'～'), u'から'],
 		[re.compile(u'〜'), u'から'],
 		[re.compile(u'\~'), u'から'],
-		[re.compile(u'^は'), u'ハ'],
 	]
 
 def predic_load():
