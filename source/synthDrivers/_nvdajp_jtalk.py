@@ -134,7 +134,7 @@ def predic_build():
 		[re.compile(u'）'), u')'],
 		[re.compile(u'［'), u'['],
 		[re.compile(u'］'), u']'],
-		[re.compile(u'”'), u'\\"'],
+		[re.compile(u'”'), u'"'],
 
 		### zenkaku alphabet convert
 		[re.compile(u'Ａ'), u'A'],
