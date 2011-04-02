@@ -32,6 +32,11 @@ def py_cmp_func(LastKeyCode,DiffValue,ImeOpenStatus,OldValue,NewValue):
 						queueHandler.queueFunction(queueHandler.eventQueue,ui.message,nvdajp_dic.dic1.get(i)[2]) # 詳細、フォネティック読み
 					else:
 						queueHandler.queueFunction(queueHandler.eventQueue,ui.message,i)
+				elif nvdajp_dic.dic1.has_key(i):
+					if (nvdajp_dic.dic1.get(i)[0]!=3) & (config.conf["keyboard"]["nvdajp3Key"]==True):
+						queueHandler.queueFunction(queueHandler.eventQueue,ui.message,nvdajp_dic.dic1.get(i)[2]) # 詳細、フォネティック読み
+					else:
+						queueHandler.queueFunction(queueHandler.eventQueue,ui.message,i)
 				else:
 					queueHandler.queueFunction(queueHandler.eventQueue,ui.message,i)
 		elif LastKeyCode in (winUser.VK_BACK,winUser.VK_DELETE):
