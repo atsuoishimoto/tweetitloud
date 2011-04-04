@@ -55,6 +55,8 @@ logwrite = None
 lastIndex = None
 currIndex = None
 
+speakPunctuation = False # config.conf["speech"]["speakPunctuation"]
+
 ###########################################
 
 def jtalk_refresh():
@@ -117,8 +119,8 @@ def predic_build():
 		[re.compile(u'｜'), u'|'],
 		[re.compile(u'－'), u'-'],
 		[re.compile(u'＝'), u'='],
-		[re.compile(u'＜'), u'>'],
-		[re.compile(u'＞'), u'<'],
+		[re.compile(u'＜'), u'<'],
+		[re.compile(u'＞'), u'>'],
 		[re.compile(u'％'), u'%'],
 		[re.compile(u'＊'), u'*'],
 		[re.compile(u'（'), u'('],
@@ -410,29 +412,29 @@ def predic_build():
 		## a | b
 		## 'a'
 		## "a"
-		[re.compile('\\/'), u'スラッシュ'],
-		[re.compile('\\:'), u'コロン'],
+		[re.compile('\\/'), u' '],				# スラッシュ
+		[re.compile('\\:'), u' '], 			# コロン
 		[re.compile('\\+'), u'プラス'],
 		[re.compile('\\-'), u'ハイフン'],
-		[re.compile('\\_'), u'カセン'],
+		[re.compile('\\_'), u' '],				# カセン
 		[re.compile('\\='), u'イコール'],
 		[re.compile('\\%'), u'パーセント'],
 		[re.compile('\\*'), u'アスタリスク'],
 		[re.compile('\\;'), u'セミコロン'],
 		[re.compile('\\|'), u'タテセン'],
 		[re.compile('\\#'), u'シャープ'],
-		[re.compile('\\"'), u'コーテーション'],
-		[re.compile('\\\''), u'アポストロフィ'],
-		[re.compile(','), u' カンマ '],
+		[re.compile('\\"'), u' '],				# コーテーション
+		[re.compile('\\\''), u' '], 			# アポストロフィ
+		[re.compile(','), 	u' カンマ '],
 
 		## [1] (2) <3>
 		## ［１］　（２）　＜３＞
-		[re.compile('\\['), u' ダイカッコヒラキ '],
-		[re.compile('\\]'), u' ダイカッコトジ '],
-		[re.compile('\\('), u' カッコヒラキ '],
-		[re.compile('\\)'), u' カッコトジ '],
-		[re.compile('\\<'), u' ショーナリ '],
-		[re.compile('\\>'), u' ダイナリ '],
+		[re.compile('\\['), u' ダイカッコ '],	# ダイカッコヒラキ 
+		[re.compile('\\]'), u' '],				# ダイカッコトジ
+		[re.compile('\\('), u' カッコ '],		# カッコヒラキ
+		[re.compile('\\)'), u' '],				# カッコトジ
+		[re.compile('\\<'), u' '],				# ショーナリ
+		[re.compile('\\>'), u' '],				# ダイナリ
 		
 		## １～２　１〜２　1~2
 		[re.compile(u'～'), u'から'],
@@ -442,7 +444,19 @@ def predic_build():
 
 def predic_load():
 	global predic
-	if predic == None: predic_build()
+	import config
+	speakPunctuation = config.conf["speech"]["speakPunctuation"]
+	if not speakPunctuation:
+		if predic == None: predic_build()
+	else:
+		predic = []
+
+def predic_reload():
+	global predic
+	if not speakPunctuation:
+		predic_build()
+	else:
+		predic = []
 
 ############################################
 # based on _espeak.py (nvda)
@@ -613,3 +627,8 @@ def set_volume(vol):
 	max_level = int(326.67 * vol + 100) # 100..32767
 	thres_level = 128
 	thres2_level = 128
+
+def set_speakPunctuation(value):
+	global speakPunctuation
+	speakPunctuation = value
+	predic_reload()

@@ -100,3 +100,6 @@ class SynthDriver(SynthDriver):
 
 	def _get_lastIndex(self):
 		return _nvdajp_jtalk.lastIndex
+	
+	def _set_speakPunctuation(self, value):
+		_nvdajp_jtalk.set_speakPunctuation(value)
