@@ -439,6 +439,10 @@ class VoiceSettingsDialog(SettingsDialog):
 	def onOk(self,evt):
 		getSynth().saveSettings()
 		config.conf["speech"]["speakPunctuation"]=self.punctuationCheckBox.IsChecked()
+		# nvdajp
+		if getSynth().name == "nvdajp_jtalk":
+			getSynth()._set_speakPunctuation(config.conf["speech"]["speakPunctuation"])
+		# nvdajp
 		config.conf["speech"][getSynth().name]["raisePitchForCapitals"]=self.raisePitchForCapsCheckBox.IsChecked()
 		config.conf["speech"][getSynth().name]["sayCapForCapitals"]=self.sayCapForCapsCheckBox.IsChecked()
 		config.conf["speech"][getSynth().name]["beepForCapitals"]=self.beepForCapsCheckBox.IsChecked()
