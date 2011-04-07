@@ -951,10 +951,7 @@ class BrailleSettingsDialog(SettingsDialog):
 		# COM1 = 0, COM2 = 1, ...
 		sizer = wx.BoxSizer(wx.HORIZONTAL)
 		label = wx.StaticText(self, wx.ID_ANY, label=_("COM &port:"))
-		comPorts = [
-			"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7",  "COM8",
-			"COM9", "COM10", "COM11", "COM12", "COM13", "COM14", "COM15", "COM16" 
-			]
+		comPorts = ["COM%d" % i for i in xrange(1,65)]
 		self.comportNames = comPorts
 		self.comportList = wx.Choice(self, wx.ID_ANY, choices=comPorts)
 		try:
