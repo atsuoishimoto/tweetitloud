@@ -113,6 +113,8 @@ class SynthDriver(SynthDriver):
 
 	def performSpeak(self,text,index=None,isCharacter=False):
 		flags=constants.SVSFIsXML
+		text=text.replace(u"\u2022", '') # bullet
+		text=text.replace(u"\uf0b7", '') # bullet
 		text=text.replace("<","&lt;")
 		pitch=(self._pitch/2)-25
 		if isinstance(index,int):

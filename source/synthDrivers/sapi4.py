@@ -80,6 +80,8 @@ class SynthDriver(SynthDriver):
 
 	def performSpeak(self,text,index=None,isCharacter=False):
 		flags=0
+		text=text.replace(u"\u2022", '') # bullet
+		text=text.replace(u"\uf0b7", '') # bullet
 		if index is not None or isCharacter:
 			text = text.replace('\\','\\\\')
 			flags+=TTSDATAFLAG_TAGGED
