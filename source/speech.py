@@ -307,8 +307,8 @@ def speakText(text,index=None,reason=REASON_MESSAGE,expandPunctuation=None):
 		
 	from brailleDisplayDrivers.DirectBM_drv import DirectBM_drv         # Masataka.Shinke
 	DirectBM_drv.sp(text)                                               						# Masataka.Shinke
-	if speechViewer.isActive:																# Masataka.Shinke
-		speechViewer.appendText(u'('+DirectBM_drv.wakach(text)+u')')    # Masataka.Shinke
+	#if speechViewer.isActive:																# Masataka.Shinke
+	#	speechViewer.appendText(u'('+DirectBM_drv.wakach(text)+u')')    # Masataka.Shinke
 		
 		
 	global beenCanceled, curWordChars
