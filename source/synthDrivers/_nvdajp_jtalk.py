@@ -481,7 +481,7 @@ class BgThread(threading.Thread):
 			try:
 				func(*args, **kwargs)
 			except:
-				log.error("Error running function from queue", exc_info=True) # pass 
+				log.error("Error running function from queue", exc_info=True)
 			bgQueue.task_done()
 
 def _execWhenDone(func, *args, **kwargs):
@@ -505,7 +505,7 @@ def _speak(msg, index=None, isCharacter=False):
 	isSpeaking = True
 	for p in predic:
 		try:
-			msg = re.sub(p[0], p[1], msg) #msg = p[0].sub(p[1], msg)
+			msg = re.sub(p[0], p[1], msg)
 		except:
 			pass
 	msg = msg.lower()
@@ -515,15 +515,11 @@ def _speak(msg, index=None, isCharacter=False):
 	for m in string.split(msg):
 		if len(m) > 0:
 			try:
-				#if DEBUG_INFO: logwrite("text2mecab(%s)" % m)
 				text = m.encode(CODE, 'ignore')
 				libjt_text2mecab(libjt, buff, text); str = buff.value
 				if not isSpeaking: jtalk_refresh(); return
-				#if DEBUG_INFO: logwrite("text2mecab result: %s" % str.decode(CODE, 'ignore'))
 				[feature, size] = Mecab_analysis(str)
-				#if DEBUG_INFO: logwrite("Mecab_analysis done.")
 				if not isSpeaking: jtalk_refresh(); return
-				#if DEBUG_INFO: Mecab_print(feature, size, logwrite, CODE)
 				libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, 
 					fperiod_ = fperiod, 
 					feed_func_ = player.feed, # player.feed() is called inside
@@ -532,9 +528,7 @@ def _speak(msg, index=None, isCharacter=False):
 					thres2_ = thres2_level,
 					level_ = max_level,
 					logwrite_ = lw)
-				#if DEBUG_INFO: logwrite("libjt_synthesis done.")
 				jtalk_refresh()
-				#if DEBUG_INFO: logwrite("jtalk_refresh done.")
 			except Exception, e:
 				if DEBUG_INFO: logwrite(e)
 	global lastIndex

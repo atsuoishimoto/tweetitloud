@@ -13,8 +13,6 @@ from synthDriverHandler import SynthDriver,VoiceInfo
 import synthDriverHandler
 from collections import OrderedDict
 
-# _LANGUAGE = 1041 # locale.windows_locale[1041] = 'ja_JP'
-
 class SynthDriver(SynthDriver):
 	"""A Japanese synth driver for NVDAjp.
 	"""
@@ -75,9 +73,8 @@ class SynthDriver(SynthDriver):
 
 	def _getAvailableVoices(self):
 		_nvdajp_jtalk.log.debug("_getAvailableVoices called")
-		voices = OrderedDict() # []
+		voices = OrderedDict()
 		for v in _nvdajp_jtalk._jtalk_voices:
-			#voices.append(VoiceInfo(v['id'], v['name']))
 			voices[v['id']] = VoiceInfo(v['id'], v['name'], 'ja_JP')
 		return voices
 

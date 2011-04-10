@@ -128,32 +128,6 @@ def Mecab_analysis(str):
 		if i > FECOUNT: return [mecab_feature, mecab_size]
 	return [mecab_feature, mecab_size]
 
-# def Mecab_analysis_utf16(str, CODE_VOICE):
-# 	global mecab_size
-# 	if len(str) == 0: return [None, None]
-# 	head = libmc.mecab_sparse_tonode(mecab, str)
-# 	if head == None: return [None, None]
-# 	mecab_size = 0
-# 
-# 	# make array of features
-# 	node = head
-# 	i = 0
-# 	while node:
-# 		s = node[0].stat
-# 		if s != MECAB_BOS_NODE and s != MECAB_EOS_NODE:
-# 			c = node[0].length
-# 			s = wstring_at(node[0].surface, c) + u"," + wstring_at(node[0].feature)
-# 			#print s.decode(CODE) # for debug
-# 			s = s.encode(CODE_VOICE); buf = create_string_buffer(s) # buf = create_string_buffer(s)
-# 			dst_ptr = mecab_feature[i]
-# 			src_ptr = byref(buf)
-# 			memmove(dst_ptr, src_ptr, len(s)+1)
-# 			i += 1
-# 		node = node[0].next
-# 		mecab_size = i
-# 		if i > FECOUNT: return [mecab_feature, mecab_size]
-# 	return [mecab_feature, mecab_size]
-
 def Mecab_refresh():
 	global mecab_size
 	mecab_size = 0
@@ -299,7 +273,7 @@ def JPC_label_print(feature, size, logwrite_):
 			s2 += "[None]"
 	logwrite_(s2)
 
-# ############################################
+#############################################
 
 FNLEN = 1000
 FILENAME = c_char * FNLEN
@@ -497,91 +471,53 @@ def trim_silence(buf, byte_count, thres=64):
 		if abs(struct.unpack('h', buf[p:p+2])[0]) >= thres:
 			end_pos = p
 			break
-	# if DEBUG_INFO: logwrite("trim_silence (%d:%d)/%d" % (begin_pos, end_pos, byte_count))
 	return buf[begin_pos:end_pos]
 
 def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, feed_func_=None, is_speaking_func_=None, thres_=32, thres2_=32, level_=32767, logwrite_=None):
 	if feature == None or size == None: return None
-	if logwrite_ != None: logwrite_('libjt_synthesis 1')
 	libjt.HTS_Engine_set_fperiod(engine, fperiod_) # 80(point=5ms) frame period
 	libjt.mecab2njd(njd, feature, size)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1a')
 	libjt.njd_set_pronunciation(njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1b')
 	libjt.njd_set_digit(njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1c')
 	libjt.njd_set_accent_phrase(njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1d')
 	# exception: access violation reading 0x00000000
 	# https://github.com/nishimotz/libopenjtalk/commit/10d3abda6835e0547846fb5e12a36c1425561aaa#diff-66
 	try:
 		libjt.njd_set_accent_type(njd)
 	except:
 		if logwrite_ != None: logwrite_('libjt_synthesis njd_set_accent_type() error ' + e)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1e')
 	libjt.njd_set_unvoiced_vowel(njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1f')
 	libjt.njd_set_long_vowel(njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1g')
 	libjt.njd2jpcommon(jpcommon, njd)
-	if logwrite_ != None: logwrite_('libjt_synthesis 1h')
 	libjt.JPCommon_make_label(jpcommon)
-	if logwrite_ != None: logwrite_('libjt_synthesis 2')
 	if is_speaking_func_ and not is_speaking_func_() :
 		libjt_refresh(libjt, engine, jpcommon, njd)
 		Mecab_refresh()
 		return None
 	s = libjt.JPCommon_get_label_size(jpcommon)
-	if logwrite_ != None: logwrite_('libjt_synthesis 3')
 	buf = None
 	if s > 2:
-		if logwrite_ != None: logwrite_('libjt_synthesis 4')
 		f = libjt.JPCommon_get_label_feature(jpcommon)
 		libjt.HTS_Engine_load_label_from_string_list(engine, f, s)
 		libjt.HTS_Engine_create_sstream(engine)
 		libjt.HTS_Engine_create_pstream(engine)
 		libjt.HTS_Engine_create_gstream(engine)
-		if logwrite_ != None: logwrite_('libjt_synthesis 5')
 		if is_speaking_func_ and not is_speaking_func_() :
 			libjt_refresh(libjt, engine, jpcommon, njd)
 			Mecab_refresh()
 			return None
-		if logwrite_ != None: logwrite_('libjt_synthesis 6')
 		libjt.jt_speech_normalize(engine, level_)
-		#total_nsample = libjt.jt_total_nsample(engine)
 		total_nsample = libjt.jt_trim_silence(engine, thres_, thres2_)
 		speech_ptr = libjt.jt_speech_ptr(engine)
 		byte_count = total_nsample * sizeof(c_short)
 		buf = string_at(speech_ptr, byte_count)
-		#buf = trim_silence(buf, byte_count, thres_)
-		if logwrite_ != None: logwrite_('libjt_synthesis 7')
 		if feed_func_: feed_func_(buf)
 		#libjt.jt_save_logs("_logfile", engine, njd)
-		#libjt.jt_save_riff("_out.wav", engine)
-		if logwrite_ != None: logwrite_('libjt_synthesis 8')
 	return buf
 
 def libjt_text2mecab(libjt, buff, txt):
 	libjt.text2mecab.argtypes = [c_char_p, c_char_p] # (char *output, char *input);
 	libjt.text2mecab(buff, txt)
-
-# http://hiroshiykw.blogspot.com/2007/08/python.html
-import re
-HAN_UPPER = re.compile(u"[A-Z]")
-HAN_LOWER = re.compile(u"[a-z]")
-HAN_DIGIT = re.compile(u"[0-9]")
-def han2zen(word):
-	word = HAN_UPPER.sub(lambda m: unichr(ord(u"Ａ") + ord(m.group(0)) - ord("A")), word)
-	word = HAN_LOWER.sub(lambda m: unichr(ord(u"ａ") + ord(m.group(0)) - ord("a")), word)
-	word = HAN_DIGIT.sub(lambda m: unichr(ord(u"０") + ord(m.group(0)) - ord("0")), word)
-	return word
-
-import unicodedata
-def text2mecab(text):
-	text = han2zen(unicodedata.normalize('NFKC', text))
-	text = re.sub(' ', u'　', text)
-	text = re.sub(',', u'，', text)
-	return text
 
 def pa_play(data, samp_rate = 16000):
 	# requires pyaudio (PortAudio wrapper)
@@ -612,7 +548,6 @@ if __name__ == '__main__':
 	M001_VOICE_DIR = VOICES_DIR + os.sep + "voice"
 	MEI_VOICE_DIR = VOICES_DIR + os.sep + "mei_normal"
 	MECABRC = "jtalk" + os.sep + "mecabrc"
-
 	MECAB_DLL = "jtalk" + os.sep + "libmecab.dll"
 	JT_DLL = "jtalk" + os.sep + "libopenjtalk.dll"
 	# MECAB_DLL = "/usr/lib/libmecab.so.1"
@@ -628,17 +563,11 @@ if __name__ == '__main__':
 	Mecab_initialize(MECAB_DLL, libjt)
 	Mecab_load(DIC, MECABRC)
 	#
-	#msg = u'ACROBAT Acrobat acrobat 123 日本語 孫正義 既読 材販 カタカナ ｶﾀｶﾅ ﾋﾗｶﾞﾅ'
-	#msg = u'使用頻度や好みなどに応じた最適形態の違いが入力システムに考慮されていなければならないので使用頻度や好みなどに応じた最適形態の違いが入力システムに考慮されていなければ．'
 	msg = u'ウェルカムトゥー nvda テンキーのinsertキーとメインのinsertキーの両方がnvdaキーとして動作します'
-	#__print(msg)
 	MSGLEN = 1000
 	text = msg.encode(CODE)
-	#__print(text)
 	buff = create_string_buffer(MSGLEN)
-	# libjt_text2mecab(libjt, buff, text); s = buff.value
-	s = text2mecab(text.decode(CODE)).encode(CODE)
-	#__print(s)
+	libjt_text2mecab(libjt, buff, text); s = buff.value
 	[feature, size] = Mecab_analysis(s)
 	Mecab_print(feature, size, __print)
 	fperiod = voice_args['fperiod']
@@ -650,6 +579,5 @@ if __name__ == '__main__':
 		w.setparams( (1, 2, voice_args['samp_rate'], len(data)/2, 'NONE', 'not compressed') )
 		w.writeframes(data)
 		w.close()
-
 	Mecab_clear()
 	libjt_clear(libjt, engine, jpcommon, njd)
