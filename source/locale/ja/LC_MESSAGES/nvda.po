@@ -1903,7 +1903,7 @@ msgstr "レビューカーソルを現在のナビゲーターオブジェクト
 
 #: globalCommands.py:524
 msgid "Reports the character of the current navigator object where the review cursor is situated. If this key is pressed twice, ascii and hexadecimal values are spoken for the character"
-msgstr "現在のナビゲーターオブジェクトのレビューカーソル位置の文字の通知。キーを2度続けて押すと、文字に対するアスキーコード及び16進コードを読み上げます。"
+msgstr "現在のナビゲーターオブジェクトのレビューカーソル位置の文字の通知。キーを2度続けて押すと、文字の説明を読み上げます。"
 
 #: globalCommands.py:542
 msgid "Moves the review cursor to the next character of the current navigator object and speaks it"
