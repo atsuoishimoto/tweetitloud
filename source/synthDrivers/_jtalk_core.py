@@ -459,20 +459,6 @@ def libjt_clear(libjt, engine, jpcommon, njd):
 	libjt.JPCommon_clear(jpcommon)
 	libjt.HTS_Engine_clear(engine)
 
-def trim_silence(buf, byte_count, thres=64):
-	# tres: signed short int (max=32767)
-	begin_pos = 0
-	for p in xrange(0, byte_count, 2): # low-byte
-		if abs(struct.unpack('h', buf[p:p+2])[0]) >= thres:
-			begin_pos = p
-			break
-	end_pos = byte_count
-	for p in xrange(byte_count-2, -2, -2): # low-byte
-		if abs(struct.unpack('h', buf[p:p+2])[0]) >= thres:
-			end_pos = p
-			break
-	return buf[begin_pos:end_pos]
-
 def libjt_synthesis(libjt, engine, jpcommon, njd, feature, size, fperiod_=80, feed_func_=None, is_speaking_func_=None, thres_=32, thres2_=32, level_=32767, logwrite_=None):
 	if feature == None or size == None: return None
 	libjt.HTS_Engine_set_fperiod(engine, fperiod_) # 80(point=5ms) frame period
