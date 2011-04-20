@@ -1,5 +1,5 @@
-# _nvdajp_jtalk.py 
 # -*- coding: utf-8 -*-
+# _nvdajp_jtalk.py 
 #A part of NonVisual Desktop Access (NVDA)
 #Copyright (C) 2006-2010 NVDA Contributors <http://www.nvda-project.org/>
 #This file is covered by the GNU General Public License.
@@ -436,20 +436,22 @@ def predic_build():
 		[re.compile('\\<'), u' '],				# ショーナリ
 		[re.compile('\\>'), u' '],				# ダイナリ
 		
-		## １～２　１〜２　1~2
+		## １～２　１?２　1~2
 		[re.compile(u'～'), u'から'],
-		[re.compile(u'〜'), u'から'],
+		[re.compile(u'\?'), u'から'],
 		[re.compile(u'\~'), u'から'],
 	]
 
 def predic_load():
-	global predic
-	import config
-	speakPunctuation = config.conf["speech"]["speakPunctuation"]
-	if not speakPunctuation:
-		if predic == None: predic_build()
-	else:
-		predic = []
+	predic_build()
+#
+#	global predic
+#	import config
+#	speakPunctuation = config.conf["speech"]["speakPunctuation"]
+#	if not speakPunctuation:
+#		if predic == None: predic_build()
+#	else:
+#		predic = []
 
 def predic_reload():
 	global predic

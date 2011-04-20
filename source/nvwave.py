@@ -12,7 +12,7 @@ from ctypes import *
 from ctypes.wintypes import *
 import winKernel
 import wave
-import config
+#import config
 
 __all__ = (
 	"WavePlayer", "getOutputDeviceNames", "outputDeviceIDToName", "outputDeviceNameToID",
