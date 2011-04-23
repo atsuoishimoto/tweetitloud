@@ -1,6 +1,6 @@
 # -*- coding: ShiftJIS -*-
 
-import os, ConfigParser, StringIO, webbrowser
+import re, os, ConfigParser, StringIO, webbrowser
 from pymfc import app, wnd, traynotify, gdi, menu, layout
 from pymfc import shellapi
 import tweepy
@@ -9,7 +9,9 @@ _nvdajp_jtalk.initialize()
 
 
 class Message:
+    URL = re.compile(u"http://\S+", re.UNICODE)
     def __init__(self, text):
+        text = self.URL.sub(u" URL ", text)
         self.text = text
 
 class Notify(traynotify.TrayNotify):
