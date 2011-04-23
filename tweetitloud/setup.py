@@ -66,7 +66,7 @@ class Target:
 
 
 setup(name='tweetitloud',
-      version="0.0.1",
+      version="0.0.2",
       data_files=[
           ('', 
               ['README.TXT', 'COPYING', 'twil.ico']),

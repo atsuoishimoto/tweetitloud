@@ -49,6 +49,13 @@ For details see file "COPYING".
 History
 -------
 
+version 0.0.2 - 2011/4/23
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- ハッシュタグなどを検索して読み上げ
+- http://www～ などのURLは、すべて "URL"に置換して読み上げ
+
+
 version 0.0.1 - 2011/4/20
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Initial relase.
