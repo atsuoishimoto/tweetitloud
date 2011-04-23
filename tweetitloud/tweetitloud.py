@@ -8,7 +8,9 @@ from synthDrivers import _nvdajp_jtalk
 _nvdajp_jtalk.initialize()
 
 
-
+class Message:
+    def __init__(self, text):
+        self.text = text
 
 class Notify(traynotify.TrayNotify):
     __running = False
@@ -19,6 +21,7 @@ class Notify(traynotify.TrayNotify):
         try:
             popup = menu.PopupMenu(u"popup")
             popup.append(menu.MenuItem(u"config", u"Config"))
+            popup.append(menu.MenuItem(u"select", u"Select source"))
             popup.append(menu.MenuItem(u"quit", u"Quit"))
             popup.create()
             
@@ -31,6 +34,8 @@ class Notify(traynotify.TrayNotify):
                     twilapp.notifyframe.destroy()
                 elif item.menuid == u"config":
                     twilapp.showConfig()
+                elif item.menuid == u"select":
+                    twilapp.showSelectSource()
         finally:
             self.__running = False
             
@@ -85,6 +90,8 @@ consumer_key =
 consumer_secret = 
 access_token = 
 access_secret = 
+showtl = 1
+showsearch=
 """
 
     CONFIGFILEPATH = os.path.join(
@@ -94,7 +101,7 @@ access_secret =
     CONFIGFILENAME = os.path.join(CONFIGFILEPATH, u'tweetitloud.config')
     
     ELAPSE = 20000
-    MAX_TIMELINE = 50
+    MAX_TIMELINE = 10
     api = None
     _seen = 0
     _running = False
@@ -110,6 +117,8 @@ access_secret =
         self.consumer_secret = config.get('CONFIG', 'consumer_secret')
         self.access_token = config.get('CONFIG', 'access_token')
         self.access_secret = config.get('CONFIG', 'access_secret')
+        self.showtl = config.getint('CONFIG', 'showtl')
+        self.showsearch = config.get('CONFIG', 'showsearch')
         
     def __loadconfig(self):
         config = ConfigParser.SafeConfigParser()
@@ -125,11 +134,12 @@ access_secret =
     
     def __saveconfig(self):
         config = self.__loadconfig()
-        config.set('CONFIG', 'consumer_key', self.consumer_key.encode('ascii'))
-        config.set('CONFIG', 'consumer_secret', self.consumer_secret.encode('ascii'))
-        config.set('CONFIG', 'access_token', self.access_token.encode('ascii'))
-        config.set('CONFIG', 'access_secret', self.access_secret.encode('ascii'))
-
+        config.set('CONFIG', 'consumer_key', self.consumer_key)
+        config.set('CONFIG', 'consumer_secret', self.consumer_secret)
+        config.set('CONFIG', 'access_token', self.access_token)
+        config.set('CONFIG', 'access_secret', self.access_secret)
+        config.set('CONFIG', 'showtl', str(self.showtl))
+        config.set('CONFIG', 'showsearch', self.showsearch)
         
         if not os.path.exists(self.CONFIGFILEPATH):
             os.makedirs(self.CONFIGFILEPATH)
@@ -141,6 +151,15 @@ access_secret =
         if ret:
             self.api = None
             self.__saveconfig()
+            self._connected = False
+            return True
+
+    def showSelectSource(self):
+        ret = SelectDialog().doModal()
+        if ret:
+            self.api = None
+            self.__saveconfig()
+            self._connected = False
             return True
 
     def run(self):
@@ -166,11 +185,18 @@ access_secret =
                 self.login()
             if not self.api:    
                 return
-            timeline = self.api.home_timeline(n)
-            timeline = [tw for tw in timeline[::-1] if tw.id > self._seen]
-            if timeline:
-                self._seen = max(self._seen, max(tw.id for tw in timeline))
-            
+
+            if self.showtl:
+                timeline = self.api.home_timeline(n)
+                ret = [Message(tw.text) for tw in timeline[::-1] if tw.id > self._seen]
+                if timeline:
+                    self._seen = max(self._seen, max(tw.id for tw in timeline))
+            else:
+                results = self.api.search(q=self.showsearch.decode('utf-8'))
+                ret = [Message(res.text) for res in results[::-1] if res.id > self._seen]
+                if results:
+                    self._seen = max(self._seen, max(tw.id for tw in results))
+                
         except Exception, e:
             self.api = None
             self.notify.setIcon(tip=unicode(str(e), "mbcs"))
@@ -179,7 +205,7 @@ access_secret =
             self.notify.setIcon(tip=self.APPNAME)
             self._connected = True
             
-        return timeline
+        return ret
             
     def _read(self):
         if self._running:
@@ -371,12 +397,64 @@ class ConfigDialog(wnd.Dialog):
         self.setResultValue(None)
         self.endDialog(self.IDCANCEL)
 
+class SelectDialog(wnd.Dialog):
+    TITLE = TWILApp.APPNAME
+    FONT = gdi.Font(face=u"MS UI Gothic", point=10)
+
+    def _prepare(self, kwargs):
+        super(SelectDialog, self)._prepare(kwargs)
+        
+        self._layout = layout.Table(parent=self, font=self.FONT, adjustparent=True,
+            pos=(10,5), margin_bottom=5, margin_right=10, rowgap=5)
+
+        row = self._layout.addRow()
+        cell = row.addCell(colspan=2)
+        cell.add(None)
+        cell.add(wnd.AutoRadioButton, checked=twilapp.showtl, title=u"タイムラインを表示", name="showtl")
+
+        row = self._layout.addRow()
+        cell = row.addCell()
+        cell.add(None)
+        cell.add(wnd.AutoRadioButton, checked=not twilapp.showtl, title=u"検索", name="showsearch")
+
+        cell = row.addCell()
+        cell.add(wnd.Edit, title=twilapp.showsearch.decode("utf-8"), width=30, name="searchtext")
+
+        row = self._layout.addRow()
+        cell = row.addCell(colspan=2, alignright=True)
+
+        cell.add(wnd.OkButton, title=u"OK", name='ok')
+        cell.add(None)
+        cell.add(wnd.CancelButton, title=u"Cancel", name='cancel')
+
+        self.setDefaultValue(None)
+        
+
+    def onOk(self, msg=None):
+        showtl = self._layout.ctrls.showtl.isChecked()
+        showsearch = self._layout.ctrls.showsearch.isChecked()
+        searchtext = self._layout.ctrls.searchtext.getText().encode('utf-8')
+
+        twilapp.showsearch = searchtext
+        if showsearch and searchtext:
+            twilapp.showtl = 0
+        else:
+            twilapp.showtl = 1
+            
+
+        self.setResultValue(True)
+        self.endDialog(self.IDOK)
+
+    def onCancel(self, msg=None):
+        self.setResultValue(None)
+        self.endDialog(self.IDCANCEL)
+
 
 def run():
     global twilapp
     twilapp = TWILApp()
     twilapp.run()
-    
+#    twilapp.showSelectSource()
 if __name__ == '__main__':
     run()
 
