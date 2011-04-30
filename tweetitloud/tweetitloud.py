@@ -7,7 +7,6 @@ import tweepy
 from synthDrivers import _nvdajp_jtalk
 _nvdajp_jtalk.initialize()
 
-
 class Message:
     URL = re.compile(u"http://\S+", re.UNICODE)
     def __init__(self, text):
@@ -98,6 +97,9 @@ access_secret =
 showtl = 1
 showsearch=
 hideaccount = 0
+voice=m001
+volume = 50
+rate = 0
 """
 
     CONFIGFILEPATH = os.path.join(
@@ -116,6 +118,7 @@ hideaccount = 0
     def __init__(self):
         self.__readconfig()
         self._producer = Producer()
+        self._init_jtalk()
         
     def __readconfig(self):
         config = self.__loadconfig()
@@ -126,6 +129,9 @@ hideaccount = 0
         self.showtl = config.getint('CONFIG', 'showtl')
         self.showsearch = config.get('CONFIG', 'showsearch')
         self.hideaccount = config.getint('CONFIG', 'hideaccount')
+        self.rate = config.getint('CONFIG', 'rate')
+        self.volume = config.getint('CONFIG', 'volume')
+        self.voice = config.get('CONFIG', 'voice')
         
     def __loadconfig(self):
         config = ConfigParser.SafeConfigParser()
@@ -148,11 +154,22 @@ hideaccount = 0
         config.set('CONFIG', 'showtl', str(1 if self.showtl else 0))
         config.set('CONFIG', 'showsearch', self.showsearch)
         config.set('CONFIG', 'hideaccount', str(1 if self.hideaccount else 0))
+        config.set('CONFIG', 'rate', str(self.rate))
+        config.set('CONFIG', 'volume', str(self.volume))
+        config.set('CONFIG', 'voice', self.voice)
         
         if not os.path.exists(self.CONFIGFILEPATH):
             os.makedirs(self.CONFIGFILEPATH)
         with open(self.CONFIGFILENAME, 'w') as f:
             config.write(f)
+        
+    def _init_jtalk(self):
+        _nvdajp_jtalk.stop()
+        voice = getattr(_nvdajp_jtalk, "_jtalk_voice_"+self.voice)
+        _nvdajp_jtalk.voice_args = voice
+        _nvdajp_jtalk.set_rate(self.rate)
+        _nvdajp_jtalk.set_volume(self.volume)
+        _nvdajp_jtalk.initialize(voice)
         
     def showConfig(self):
         ret = ConfigDialog().doModal()
@@ -176,6 +193,8 @@ hideaccount = 0
             self.api = None
             self.__saveconfig()
             self._connected = False
+            
+            self._init_jtalk()
             return True
 
     def run(self):
@@ -237,7 +256,6 @@ hideaccount = 0
         self._running = True
         try:
             firsttime = not self._connected
-            firsttime = False
             timeline = self._fetch(self.MAX_TIMELINE)
             if not firsttime:
                 self._producer.submit(timeline)
@@ -477,7 +495,7 @@ class SelectDialog(wnd.Dialog):
 class VoiceDialog(wnd.Dialog):
     TITLE = TWILApp.APPNAME
     FONT = gdi.Font(face=u"MS UI Gothic", point=10)
-
+    voices = [u"m001", u"mei"]
     def _prepare(self, kwargs):
         super(VoiceDialog, self)._prepare(kwargs)
         
@@ -486,8 +504,28 @@ class VoiceDialog(wnd.Dialog):
 
         row = self._layout.addRow()
         cell = row.addCell(colspan=2)
-        cell.add(None)
         cell.add(wnd.AutoCheckBox, checked=twilapp.hideaccount, title=u"アカウント名を読まない", name="hideaccount")
+
+        row = self._layout.addRow()
+        cell = row.addCell()
+        cell.add(u"ボリューム ")
+        cell = row.addCell()
+        cell.add(wnd.NumEdit, title=unicode(twilapp.volume), name="volume")
+        cell.add(u" (0-100)")
+
+        row = self._layout.addRow()
+        cell = row.addCell()
+        cell.add(u"速度")
+        cell = row.addCell()
+        cell.add(wnd.NumEdit, title=unicode(twilapp.rate), name="rate")
+        cell.add(u" (0-100)")
+
+        row = self._layout.addRow()
+        cell = row.addCell()
+        cell.add(u"声")
+        cell = row.addCell()
+        cell.add(wnd.DropDownList, name="voice", 
+            inititems=self.voices, initidx=self.voices.index(twilapp.voice), width=30)
 
         row = self._layout.addRow()
         cell = row.addCell(colspan=2, alignright=True)
@@ -501,8 +539,25 @@ class VoiceDialog(wnd.Dialog):
 
     def onOk(self, msg=None):
         hideaccount = self._layout.ctrls.hideaccount.isChecked()
+        try:
+            volume = int(self._layout.ctrls.volume.getText())
+        except ValueError:
+            self._layout.ctrls.volume.setFocus()
+            return
 
-        twilapp.hideaccount = self._layout.ctrls.hideaccount.isChecked()
+        try:
+            rate = int(self._layout.ctrls.rate.getText())
+        except ValueError:
+            self._layout.ctrls.rate.setFocus()
+            return
+            
+
+        voice = self.voices[self._layout.ctrls.voice.getCurSel()]
+
+        twilapp.hideaccount = hideaccount
+        twilapp.volume = volume
+        twilapp.rate = rate
+        twilapp.voice = voice.encode("ascii")
 
         self.setResultValue(True)
         self.endDialog(self.IDOK)
