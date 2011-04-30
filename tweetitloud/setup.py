@@ -57,7 +57,7 @@ class Target:
         self.__dict__.update(kw)
         # for the versioninfo resources
         self.script = "tweetitloud.py"
-        self.version = "0.0.1"
+        self.version = "0.0.3"
         self.description = "tweetitloud"
         self.company_name = "Atsuo Ishimoto"
         self.name = "Tweet it loud!"
@@ -66,7 +66,7 @@ class Target:
 
 
 setup(name='tweetitloud',
-      version="0.0.2",
+      version="0.0.3",
       data_files=[
           ('', 
               ['README.TXT', 'COPYING', 'twil.ico']),
